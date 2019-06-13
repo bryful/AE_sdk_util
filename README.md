@@ -21,8 +21,3 @@ twitter:[bryful](https://twitter.com/bryful)
 bryful@gmail.com  
 
 # References
-
-ファイル名・ファイルパスから 特大アイコン (48x48 256x256 ピクセル) を取得する (C#プログラミング)  
-https://www.ipentec.com/document/csharp-shell-namespace-get-big-icon-from-file-path  
-
-
