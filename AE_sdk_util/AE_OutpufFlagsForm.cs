@@ -20,14 +20,17 @@ using Codeplex.Data;
 namespace AE_sdk_util
 {
 	
-	public partial class Form1 : Form
+	public partial class AE_OutpufFlagsForm : Form
 	{
+		private AE_VersionForm versionForm = null;
 		private AE_Effect_h aeh = new AE_Effect_h();
+		
+		#region SkeltonCode
 		//-------------------------------------------------------------
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		public Form1()
+		public AE_OutpufFlagsForm()
 		{
 			InitializeComponent();
 		}
@@ -136,54 +139,33 @@ namespace AE_sdk_util
 		{
 			AppInfoDialog.ShowAppInfoDialog();
 		}
-		private void button1_Click(object sender, EventArgs e)
-		{
+		#endregion
 
-			JsonPref j = new JsonPref();
-
-			int[] aaa = new int[] { 78, 9, 12 };
-			double[] bbb = new double[] { 0.7, 0.01, 0.12 };
-			string[] ccc = new string[] { "eee","sfskjbF", "13" };
-			j.SetIntArray("aa", aaa);
-			j.SetDoubleArray("bb",bbb);
-			j.SetStringArray("cc", ccc);
-
-			MessageBox.Show(j.ToJson());
-
-		}
+		/// <summary>
+		/// AE_Effect.hを読み込む
+		/// </summary>
+		/// <param name="str"></param>
+		/// <returns></returns>
 		public bool LoadFile(string str)
 		{
 			bool ret = aeh.Load(str);
-			//textBox1.AppendText(aeh.InfoText +"-------------------\r\n"+aeh.Info2Text);
 			return ret;
 		}
-
-		private void label2_Click(object sender, EventArgs e)
+		public void ShowVersionEditor()
 		{
-
+			if (versionForm == null) versionForm = new AE_VersionForm();
+			versionForm.FormClosed += VersionForm_FormClosed;
+			versionForm.Show();
 		}
 
-		/*
-private void button1_Click(object sender, EventArgs e)
-{
-	dynamic a = new DynamicJson();
-	a.fff = new string[] { "a", "B" };
-	a.fff = "12";
-	//a.fff = new { aaa=12, ccc="www" };
+		private void VersionForm_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			versionForm = null;
+		}
 
-	MessageBox.Show(a.fff.GetType().ToString());
-
-	JsonPref s = new JsonPref();
-	s.AddInt("aaa", 99);
-	string ss = s.ToJson();
-	MessageBox.Show(ss);
-	s.Parse(ss);
-	string sss = s.ToJson();
-	MessageBox.Show(sss);
-
-	int i = s.GetInt("aaa");
-	MessageBox.Show(String.Format("{0}", i));
-}
-*/
+		private void showVersionMenu_Click(object sender, EventArgs e)
+		{
+			ShowVersionEditor();
+		}
 	}
 }

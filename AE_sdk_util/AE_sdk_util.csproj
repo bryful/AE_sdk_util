@@ -91,6 +91,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AE_VersionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AE_VersionForm.Designer.cs">
+      <DependentUpon>AE_VersionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="util\AE_Effect_h.cs" />
     <Compile Include="util\AE_out_flags_info.cs" />
     <Compile Include="AppInfoDialog.cs">
@@ -100,21 +106,24 @@
       <DependentUpon>AppInfoDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="DynamicJson.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="AE_OutpufFlagsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="AE_OutpufFlagsForm.Designer.cs">
+      <DependentUpon>AE_OutpufFlagsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="JsonPref.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WindowsShellAPI.cs" />
+    <EmbeddedResource Include="AE_VersionForm.resx">
+      <DependentUpon>AE_VersionForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AppInfoDialog.resx">
       <DependentUpon>AppInfoDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="AE_OutpufFlagsForm.resx">
+      <DependentUpon>AE_OutpufFlagsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -141,6 +150,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AE_Effect.h" />
     <Content Include="AE_sdk_util.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

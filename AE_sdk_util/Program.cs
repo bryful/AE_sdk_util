@@ -15,14 +15,14 @@ namespace AE_sdk_util
 		{
 			this.EnableVisualStyles = true;
 			this.IsSingleInstance = true;
-			this.MainForm = new Form1();//スタートアップフォームを設定
+			this.MainForm = new AE_OutpufFlagsForm();//スタートアップフォームを設定
 			this.StartupNextInstance += new StartupNextInstanceEventHandler(MyApplication_StartupNextInstance);
 		}
 		public void MyApplication_StartupNextInstance(object sender, StartupNextInstanceEventArgs e)
 		{
 			//ここに二重起動されたときの処理を書く
 			//e.CommandLineでコマンドライン引数を取得出来る
-			Form1 f = (Form1)this.MainForm;
+			AE_OutpufFlagsForm f = (AE_OutpufFlagsForm)this.MainForm;
 			f.GetCommand(e.CommandLine.ToArray<string>());
 		}
 	}

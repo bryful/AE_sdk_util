@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace AE_sdk_util
 {
-	enum VMODE
+	public enum VMODE
 	{
 		OUT_FLAG=1,
 		OUT_FLAG2
@@ -24,20 +24,24 @@ namespace AE_sdk_util
 
 		#region property
 		private VMODE m_mode = VMODE.OUT_FLAG;
+		/// <summary>
+		/// 表示切替
+		/// </summary>
+		public VMODE Vmode
+		{
+			get { return m_mode; }
+			set { m_mode = value; }
+		}
 
 		private int m_SelectedIndex = -1;
 		private int m_SelectedIndex2 = -1;
 
 		private CheckedListBox _InfoList= null;
-		public List<string> lines = new List<string>();
-		public string LineText
-		{
-			get
-			{
-				return String.Join("\r\n", lines);
-			}
-		}
+
 		public List<AE_out_flags_info> Info = new List<AE_out_flags_info>();
+		/// <summary>
+		/// 
+		/// </summary>
 		public string InfoText
 		{
 			get
@@ -68,7 +72,7 @@ namespace AE_sdk_util
 			}
 		}
 		#endregion
-		//-----------------------------------------------------------------------
+		// **********************************************************************************
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
@@ -76,32 +80,7 @@ namespace AE_sdk_util
 		{
 
 		}
-		//-----------------------------------------------------------------------
-		/// <summary>
-		/// 文字列から重複したTABを消す
-		/// </summary>
-		/// <param name="str"></param>
-		/// <returns></returns>
-		private string dupTab(string str)
-		{
-			string ret = "";
-			if (str.Length <= 0) return ret;
-			else if (str.Length == 0) return ret;
-			for(int i=0; i<str.Length;i++)
-			{
-				ret += str[i];
-				if (str[i] == '\t')
-				{
-					while(str[i]!='\t')
-					{
-						i++;
-					}
-				}
-
-			}
-			return ret;
-		}
-		//-----------------------------------------------------------------------
+		// **********************************************************************************
 		private int IndexFromW(string[] sa, string s,int start = 0)
 		{
 			// /** -------------------- Output Flags --------------------
@@ -123,8 +102,8 @@ namespace AE_sdk_util
 			}
 			return ret;
 		}
-		//-----------------------------------------------------------------------
-		private int FindCommentEnd(int start = 1)
+		// **********************************************************************************
+		private int FindCommentEnd(List<string>lines, int start = 1)
 		{
 			int ret = -1;
 			if (lines.Count <= 0) return ret;
@@ -138,6 +117,7 @@ namespace AE_sdk_util
 			}
 			return ret;
 		}
+		// **********************************************************************************
 		private int FindName(string s)
 		{
 			int ret = -1;
@@ -152,6 +132,7 @@ namespace AE_sdk_util
 			}
 			return ret;
 		}
+		// **********************************************************************************
 		private int FindName2(string s)
 		{
 			int ret = -1;
@@ -166,6 +147,7 @@ namespace AE_sdk_util
 			}
 			return ret;
 		}
+		// **********************************************************************************
 		private int ValueParse(string s)
 		{
 			int r = 0;
@@ -180,6 +162,7 @@ namespace AE_sdk_util
 			}
 			return r;
 		}
+		// **********************************************************************************
 		private string []  SplitLine(string s)
 		{
 			string[] ret = new string[3];
@@ -202,12 +185,18 @@ namespace AE_sdk_util
 
 			return ret;
 		}
-		private bool LinesAnalysis()
+		// **********************************************************************************
+		/// <summary>
+		/// 文字リストを解析する
+		/// </summary>
+		/// <param name="lines"></param>
+		/// <returns></returns>
+		private bool LinesAnalysis(List<string> lines)
 		{
 			bool ret = false;
 			if (lines.Count <=0) return ret;
 			//コメントエンドを探す
-			int comEnd = FindCommentEnd();
+			int comEnd = FindCommentEnd(lines);
 			if (comEnd <= 0) return ret;
 			//最初にenumを
 			Info.Clear();
@@ -269,7 +258,7 @@ namespace AE_sdk_util
 
 			return ((Info.Count > 0) && (Info2.Count > 0));
 		}
-		//-----------------------------------------------------------------------
+		// **********************************************************************************
 		/// <summary>
 		/// AE_Effect.hを読み込む
 		/// </summary>
@@ -278,7 +267,7 @@ namespace AE_sdk_util
 		public bool Load(string p)
 		{
 			bool ret = false;
-			lines.Clear();
+			List<string> lines = new List<string>();
 			try
 			{
 				string[] orglines = File.ReadAllLines(p);
@@ -298,7 +287,7 @@ namespace AE_sdk_util
 						for (int i = idxS; i < idxL; i++)
 							lines.Add(orglines[i]);
 
-						ret = LinesAnalysis();
+						ret = LinesAnalysis(lines);
 					}
 				}
 			}
@@ -308,7 +297,7 @@ namespace AE_sdk_util
 			}
 			return ret;
 		}
-		//-----------------------------------------------------------------------
+		// **********************************************************************************
 		public CheckedListBox InfoList
 		{
 			get { return _InfoList; }

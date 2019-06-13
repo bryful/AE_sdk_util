@@ -1,6 +1,6 @@
 ﻿namespace AE_sdk_util
 {
-	partial class Form1
+	partial class AE_OutpufFlagsForm
 	{
 		/// <summary>
 		/// 必要なデザイナー変数です。
@@ -35,6 +35,7 @@
 			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.showVersionMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -59,7 +60,7 @@
             this.helpToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(454, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(498, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -101,9 +102,18 @@
 			// 
 			// editToolStripMenuItem
 			// 
+			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showVersionMenu});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
 			this.editToolStripMenuItem.Text = "Edit";
+			// 
+			// showVersionMenu
+			// 
+			this.showVersionMenu.Name = "showVersionMenu";
+			this.showVersionMenu.Size = new System.Drawing.Size(180, 22);
+			this.showVersionMenu.Text = "ShowVersionEditor";
+			this.showVersionMenu.Click += new System.EventHandler(this.showVersionMenu_Click);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -124,7 +134,7 @@
 			// 
 			this.statusStrip1.Location = new System.Drawing.Point(0, 539);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(454, 22);
+			this.statusStrip1.Size = new System.Drawing.Size(498, 22);
 			this.statusStrip1.TabIndex = 1;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
@@ -136,7 +146,7 @@
 			this.LstFlags.FormattingEnabled = true;
 			this.LstFlags.Location = new System.Drawing.Point(12, 67);
 			this.LstFlags.Name = "LstFlags";
-			this.LstFlags.Size = new System.Drawing.Size(430, 144);
+			this.LstFlags.Size = new System.Drawing.Size(474, 144);
 			this.LstFlags.TabIndex = 5;
 			// 
 			// tbInfo
@@ -146,14 +156,14 @@
 			this.tbInfo.Location = new System.Drawing.Point(12, 249);
 			this.tbInfo.Multiline = true;
 			this.tbInfo.Name = "tbInfo";
-			this.tbInfo.Size = new System.Drawing.Size(429, 128);
+			this.tbInfo.Size = new System.Drawing.Size(473, 128);
 			this.tbInfo.TabIndex = 6;
 			// 
 			// numericUpDown1
 			// 
 			this.numericUpDown1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.numericUpDown1.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.numericUpDown1.Location = new System.Drawing.Point(305, 38);
+			this.numericUpDown1.Location = new System.Drawing.Point(349, 38);
 			this.numericUpDown1.Name = "numericUpDown1";
 			this.numericUpDown1.Size = new System.Drawing.Size(137, 23);
 			this.numericUpDown1.TabIndex = 7;
@@ -165,7 +175,7 @@
 			this.tbInfoJ.Location = new System.Drawing.Point(12, 408);
 			this.tbInfoJ.Multiline = true;
 			this.tbInfoJ.Name = "tbInfoJ";
-			this.tbInfoJ.Size = new System.Drawing.Size(429, 128);
+			this.tbInfoJ.Size = new System.Drawing.Size(473, 128);
 			this.tbInfoJ.TabIndex = 8;
 			// 
 			// radioButton1
@@ -197,7 +207,7 @@
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label1.AutoSize = true;
 			this.label1.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.label1.Location = new System.Drawing.Point(256, 41);
+			this.label1.Location = new System.Drawing.Point(300, 41);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(43, 16);
 			this.label1.TabIndex = 11;
@@ -212,7 +222,6 @@
 			this.label2.Size = new System.Drawing.Size(63, 12);
 			this.label2.TabIndex = 12;
 			this.label2.Text = "Description";
-			this.label2.Click += new System.EventHandler(this.label2_Click);
 			// 
 			// label3
 			// 
@@ -224,12 +233,12 @@
 			this.label3.TabIndex = 13;
 			this.label3.Text = "日本語";
 			// 
-			// Form1
+			// AE_OutpufFlagsForm
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(454, 561);
+			this.ClientSize = new System.Drawing.Size(498, 561);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
@@ -243,8 +252,8 @@
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(470, 600);
-			this.Name = "Form1";
-			this.Text = "Form1";
+			this.Name = "AE_OutpufFlagsForm";
+			this.Text = "AE_sdk_util";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
@@ -278,6 +287,7 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.ToolStripMenuItem showVersionMenu;
 	}
 }
 
