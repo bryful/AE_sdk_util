@@ -1,14 +1,13 @@
-﻿# AE_sdk_util
+﻿## AE_sdk_util
+After Effects SDKで必要な**Output Flags**と**Version**を計算するアプリです。
 
 
+## Setup
 
-# Setup
-
-# Usage
+## Usage
 
 
-# License
-
+## License
 This software is released under the MIT License, see LICENSE. 
 
 # Authors
