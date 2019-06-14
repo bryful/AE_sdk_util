@@ -60,6 +60,18 @@ namespace AE_sdk_util
 				if (ok) this.Location = p;
 			}
 			this.Text = Path.GetFileNameWithoutExtension(Application.ExecutablePath);
+
+			aeh.InfoList = outflagList1;
+			aeh.TextBox = tbInfo;
+			aeh.TextBox2 = tbInfoJ;
+			aeh.NumericUpDown = numericUpDown1;
+
+			string path = Path.Combine(Application.UserAppDataPath, Path.GetFileNameWithoutExtension(Application.ExecutablePath) + ".def");
+			if (aeh.LoadJson(path)==false)
+			{
+				aeh.FromJson(AE_sdk_util.Properties.Resources.def);
+
+			}
 		}
 		//-------------------------------------------------------------
 		/// <summary>
@@ -76,6 +88,9 @@ namespace AE_sdk_util
 
 			pref.SetIntArray("IntArray", new int[] { 8, 9, 7 });
 			pref.Save();
+
+			string path = Path.Combine(Application.UserAppDataPath, Path.GetFileNameWithoutExtension(Application.ExecutablePath) + ".def");
+			aeh.SaveJson(path);
 
 		}
 		//-------------------------------------------------------------
@@ -113,6 +128,7 @@ namespace AE_sdk_util
 		/// <param name="cmd"></param>
 		public void GetCommand(string[] cmd)
 		{
+			/*
 			if (cmd.Length>0)
 			{
 				foreach (string s in cmd)
@@ -123,6 +139,7 @@ namespace AE_sdk_util
 					}
 				}
 			}
+			*/
 		}
 		/// <summary>
 		/// メニューの終了
@@ -146,9 +163,9 @@ namespace AE_sdk_util
 		/// </summary>
 		/// <param name="str"></param>
 		/// <returns></returns>
-		public bool LoadFile(string str)
+		public bool LoadAE_Effects_H_File(string str)
 		{
-			bool ret = aeh.Load(str);
+			bool ret = aeh.AE_Effect_H_Load(str);
 			return ret;
 		}
 		public void ShowVersionEditor()
@@ -166,6 +183,23 @@ namespace AE_sdk_util
 		private void showVersionMenu_Click(object sender, EventArgs e)
 		{
 			ShowVersionEditor();
+		}
+
+		private void rbMode1_CheckedChanged(object sender, EventArgs e)
+		{
+			if(rbMode1.Checked==true)
+			{
+				aeh.SetMode(VMODE.OUT_FLAG);
+			}
+			else
+			{
+				aeh.SetMode(VMODE.OUT_FLAG2);
+			}
+		}
+
+		private void openToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

@@ -41,9 +41,8 @@
 			this.numVersion = new System.Windows.Forms.NumericUpDown();
 			this.label6 = new System.Windows.Forms.Label();
 			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.button1 = new System.Windows.Forms.Button();
-			this.button2 = new System.Windows.Forms.Button();
-			this.button3 = new System.Windows.Forms.Button();
+			this.btnPVersion = new System.Windows.Forms.Button();
+			this.btnCopyCode = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.numMajor)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numMinor)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numBug)).BeginInit();
@@ -68,6 +67,7 @@
 			this.numMajor.Name = "numMajor";
 			this.numMajor.Size = new System.Drawing.Size(152, 23);
 			this.numMajor.TabIndex = 1;
+			this.numMajor.Tag = "0";
 			this.numMajor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			this.numMajor.ValueChanged += new System.EventHandler(this.numMajor_ValueChanged);
 			// 
@@ -75,9 +75,15 @@
 			// 
 			this.numMinor.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.numMinor.Location = new System.Drawing.Point(143, 40);
+			this.numMinor.Maximum = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
 			this.numMinor.Name = "numMinor";
 			this.numMinor.Size = new System.Drawing.Size(152, 23);
 			this.numMinor.TabIndex = 3;
+			this.numMinor.Tag = "1";
 			this.numMinor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			this.numMinor.ValueChanged += new System.EventHandler(this.numMajor_ValueChanged);
 			// 
@@ -95,9 +101,15 @@
 			// 
 			this.numBug.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.numBug.Location = new System.Drawing.Point(143, 73);
+			this.numBug.Maximum = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
 			this.numBug.Name = "numBug";
 			this.numBug.Size = new System.Drawing.Size(152, 23);
 			this.numBug.TabIndex = 5;
+			this.numBug.Tag = "2";
 			this.numBug.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			this.numBug.ValueChanged += new System.EventHandler(this.numMajor_ValueChanged);
 			// 
@@ -115,9 +127,15 @@
 			// 
 			this.numBuild.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.numBuild.Location = new System.Drawing.Point(143, 139);
+			this.numBuild.Maximum = new decimal(new int[] {
+            511,
+            0,
+            0,
+            0});
 			this.numBuild.Name = "numBuild";
 			this.numBuild.Size = new System.Drawing.Size(152, 23);
 			this.numBuild.TabIndex = 7;
+			this.numBuild.Tag = "4";
 			this.numBuild.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			this.numBuild.ValueChanged += new System.EventHandler(this.numMajor_ValueChanged);
 			// 
@@ -143,6 +161,7 @@
 			// 
 			// cmbStage
 			// 
+			this.cmbStage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cmbStage.FormattingEnabled = true;
 			this.cmbStage.Items.AddRange(new object[] {
             "\tPF_Stage_DEVELOP",
@@ -153,7 +172,8 @@
 			this.cmbStage.Name = "cmbStage";
 			this.cmbStage.Size = new System.Drawing.Size(153, 20);
 			this.cmbStage.TabIndex = 9;
-			this.cmbStage.SelectedValueChanged += new System.EventHandler(this.numMajor_ValueChanged);
+			this.cmbStage.Tag = "3";
+			this.cmbStage.SelectedIndexChanged += new System.EventHandler(this.numMajor_ValueChanged);
 			// 
 			// numVersion
 			// 
@@ -169,6 +189,9 @@
 			this.numVersion.Size = new System.Drawing.Size(226, 31);
 			this.numVersion.TabIndex = 10;
 			this.numVersion.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numVersion.ValueChanged += new System.EventHandler(this.numVersion_ValueChanged);
+			this.numVersion.Click += new System.EventHandler(this.numVersion_ValueChanged);
+			this.numVersion.KeyUp += new System.Windows.Forms.KeyEventHandler(this.numVersion_KeyUp);
 			// 
 			// label6
 			// 
@@ -193,54 +216,46 @@
             "#define\tSTAGE_VERSION\t\tPF_Stage_DEVELOP",
             "#define\tBUILD_VERSION\t1",
             "#define VERSION 524290\t//AE_Effects_Version.exeで上記計算して求める"});
+			this.textBox1.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.textBox1.Location = new System.Drawing.Point(301, 10);
 			this.textBox1.Multiline = true;
 			this.textBox1.Name = "textBox1";
 			this.textBox1.ReadOnly = true;
 			this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.textBox1.Size = new System.Drawing.Size(381, 228);
+			this.textBox1.Size = new System.Drawing.Size(308, 228);
 			this.textBox1.TabIndex = 12;
 			this.textBox1.Text = "#define\tMAJOR_VERSION\t1\\r\\n";
 			this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
 			// 
-			// button1
+			// btnPVersion
 			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.button1.Location = new System.Drawing.Point(107, 244);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 13;
-			this.button1.Text = "Peast";
-			this.button1.UseVisualStyleBackColor = true;
+			this.btnPVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.btnPVersion.Location = new System.Drawing.Point(183, 244);
+			this.btnPVersion.Name = "btnPVersion";
+			this.btnPVersion.Size = new System.Drawing.Size(112, 23);
+			this.btnPVersion.TabIndex = 13;
+			this.btnPVersion.Text = "Peast Version";
+			this.btnPVersion.UseVisualStyleBackColor = true;
+			this.btnPVersion.Click += new System.EventHandler(this.btnPVersion_Click);
 			// 
-			// button2
+			// btnCopyCode
 			// 
-			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.button2.Location = new System.Drawing.Point(188, 245);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(75, 23);
-			this.button2.TabIndex = 14;
-			this.button2.Text = "Copy";
-			this.button2.UseVisualStyleBackColor = true;
-			// 
-			// button3
-			// 
-			this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button3.Location = new System.Drawing.Point(604, 245);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(75, 23);
-			this.button3.TabIndex = 15;
-			this.button3.Text = "Copy Code";
-			this.button3.UseVisualStyleBackColor = true;
+			this.btnCopyCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnCopyCode.Location = new System.Drawing.Point(487, 245);
+			this.btnCopyCode.Name = "btnCopyCode";
+			this.btnCopyCode.Size = new System.Drawing.Size(119, 23);
+			this.btnCopyCode.TabIndex = 15;
+			this.btnCopyCode.Text = "Copy Code";
+			this.btnCopyCode.UseVisualStyleBackColor = true;
+			this.btnCopyCode.Click += new System.EventHandler(this.btnCopyCode_Click);
 			// 
 			// AE_VersionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(691, 282);
-			this.Controls.Add(this.button3);
-			this.Controls.Add(this.button2);
-			this.Controls.Add(this.button1);
+			this.ClientSize = new System.Drawing.Size(618, 282);
+			this.Controls.Add(this.btnCopyCode);
+			this.Controls.Add(this.btnPVersion);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.label6);
 			this.Controls.Add(this.numVersion);
@@ -258,6 +273,7 @@
 			this.Name = "AE_VersionForm";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "AE_Effects_Version";
 			((System.ComponentModel.ISupportInitialize)(this.numMajor)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numMinor)).EndInit();
@@ -284,8 +300,7 @@
 		private System.Windows.Forms.NumericUpDown numVersion;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.Button button1;
-		private System.Windows.Forms.Button button2;
-		private System.Windows.Forms.Button button3;
+		private System.Windows.Forms.Button btnPVersion;
+		private System.Windows.Forms.Button btnCopyCode;
 	}
 }

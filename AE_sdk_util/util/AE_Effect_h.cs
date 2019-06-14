@@ -10,6 +10,7 @@ using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Codeplex.Data;
 
 namespace AE_sdk_util
 {
@@ -23,6 +24,8 @@ namespace AE_sdk_util
 	{
 
 		#region property
+		private bool RefFlag = false;
+
 		private VMODE m_mode = VMODE.OUT_FLAG;
 		/// <summary>
 		/// 表示切替
@@ -30,47 +33,19 @@ namespace AE_sdk_util
 		public VMODE Vmode
 		{
 			get { return m_mode; }
-			set { m_mode = value; }
+			set { SetMode(value); }
 		}
 
 		private int m_SelectedIndex = -1;
 		private int m_SelectedIndex2 = -1;
 
-		private CheckedListBox _InfoList= null;
+		private OutflagList _InfoList= null;
+		private TextBox m_TextBox = null;
+		private TextBox m_TextBox2 = null;
+		private NumericUpDown m_numericUpDown = null;
 
 		public List<AE_out_flags_info> Info = new List<AE_out_flags_info>();
-		/// <summary>
-		/// 
-		/// </summary>
-		public string InfoText
-		{
-			get
-			{
-				string ret = "";
-				foreach(AE_out_flags_info oi in Info)
-				{
-					if (ret != "") ret += "\r\n";
-					ret += "**********************\r\n";
-					ret += oi.ToString();
-				}
-				return ret;
-			}
-		}
-		public List<AE_out_flags_info> Info2 = new List<AE_out_flags_info>();
-		public string Info2Text
-		{
-			get
-			{
-				string ret = "";
-				foreach (AE_out_flags_info oi in Info2)
-				{
-					if (ret != "") ret += "\r\n";
-					ret += "**********************\r\n";
-					ret += oi.ToString();
-				}
-				return ret;
-			}
-		}
+		public List<AE_out_flags_info> Info2= new List<AE_out_flags_info>();
 		#endregion
 		// **********************************************************************************
 		/// <summary>
@@ -81,6 +56,7 @@ namespace AE_sdk_util
 
 		}
 		// **********************************************************************************
+		#region Analysys
 		private int IndexFromW(string[] sa, string s,int start = 0)
 		{
 			// /** -------------------- Output Flags --------------------
@@ -258,13 +234,15 @@ namespace AE_sdk_util
 
 			return ((Info.Count > 0) && (Info2.Count > 0));
 		}
+		#endregion
+
 		// **********************************************************************************
 		/// <summary>
 		/// AE_Effect.hを読み込む
 		/// </summary>
 		/// <param name="p"></param>
 		/// <returns></returns>
-		public bool Load(string p)
+		public bool AE_Effect_H_Load(string p)
 		{
 			bool ret = false;
 			List<string> lines = new List<string>();
@@ -288,6 +266,11 @@ namespace AE_sdk_util
 							lines.Add(orglines[i]);
 
 						ret = LinesAnalysis(lines);
+						if (ret)
+						{
+							ShowList();
+							ShowInfo();
+						}
 					}
 				}
 			}
@@ -298,7 +281,7 @@ namespace AE_sdk_util
 			return ret;
 		}
 		// **********************************************************************************
-		public CheckedListBox InfoList
+		public OutflagList InfoList
 		{
 			get { return _InfoList; }
 			set
@@ -306,14 +289,139 @@ namespace AE_sdk_util
 				_InfoList = value;
 				if(_InfoList!=null)
 				{
+					ShowList();
 					_InfoList.SelectedIndexChanged += _InfoList_SelectedIndexChanged;
+					_InfoList.ItemCheck += _InfoList_ItemCheck;
+				}
+			}
+		}
+
+		private void _InfoList_ItemCheck(object sender, ItemCheckEventArgs e)
+		{
+
+			int idx = e.Index;
+			if (idx < 0) return;
+			if(m_mode==VMODE.OUT_FLAG)
+			{
+				Info[idx].Checked = _InfoList.GetItemChecked(idx);
+			}
+			else
+			{
+				Info2[idx].Checked = _InfoList.GetItemChecked(idx);
+			}
+			Calc();
+		}
+		public void Calc()
+		{
+			int r = 0;
+			if (m_mode==VMODE.OUT_FLAG)
+			{
+				foreach(AE_out_flags_info oi in Info)
+				{
+					if(oi.Checked==true)
+					{
+						r += oi.Value;
+					}
+				}
+			}
+			else
+			{
+				foreach (AE_out_flags_info oi in Info2)
+				{
+					if (oi.Checked == true)
+					{
+						r += oi.Value;
+					}
+				}
+			}
+			if(m_numericUpDown.Value!= (decimal)r)
+			{
+				m_numericUpDown.Value = (decimal)r;
+			}
+		}
+		public TextBox TextBox
+		{
+			get { return m_TextBox; }
+			set
+			{
+				m_TextBox = value;
+				if(m_TextBox != null)
+				{
+					m_TextBox.ReadOnly = true;
+					ShowInfo();
+				}
+			}
+		}
+		public TextBox TextBox2
+		{
+			get { return m_TextBox2; }
+			set
+			{
+				m_TextBox2 = value;
+				if (m_TextBox2 != null)
+				{
+					ShowInfo();
+					m_TextBox2.TextChanged += M_TextBox2_TextChanged;
+				}
+			}
+		}
+		public NumericUpDown NumericUpDown
+		{
+			get { return m_numericUpDown; }
+			set
+			{
+				m_numericUpDown = value;
+				if(m_numericUpDown!=null)
+				{
+					m_numericUpDown.Maximum = int.MaxValue;
+				}
+			}
+		}
+		//-----------------------------------------------------------------------
+		private void M_TextBox2_TextChanged(object sender, EventArgs e)
+		{
+			if (_InfoList == null) return;
+			if (RefFlag == true) return;
+			if(m_mode == VMODE.OUT_FLAG)
+			{
+				Info[m_SelectedIndex].DescriptionJ = m_TextBox2.Text;
+			}
+			else
+			{
+				Info2[m_SelectedIndex2].DescriptionJ = m_TextBox2.Text;
+			}
+		}
+		//-----------------------------------------------------------------------
+		private void PushCheked()
+		{
+			List<bool> cbl = new List<bool>();
+			if ((_InfoList != null) && (_InfoList.Items.Count > 0))
+			{
+				for (int i = 0; i < _InfoList.Items.Count; i++)
+				{
+					cbl.Add(_InfoList.GetItemChecked(i));
+				}
+			}
+			if (m_mode == VMODE.OUT_FLAG)
+			{
+				for (int i = 0; i < cbl.Count; i++)
+				{
+					Info[i].Checked = cbl[i];
+				}
+			}
+			else
+			{
+				for (int i = 0; i < cbl.Count; i++)
+				{
+					Info2[i].Checked = cbl[i];
 				}
 			}
 		}
 		//-----------------------------------------------------------------------
 		private void _InfoList_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			CheckedListBox cb = (CheckedListBox)sender;
+			OutflagList cb = (OutflagList)sender;
+			PushCheked();
 			if (m_mode == VMODE.OUT_FLAG)
 			{
 				m_SelectedIndex = cb.SelectedIndex;
@@ -322,20 +430,210 @@ namespace AE_sdk_util
 			{
 				m_SelectedIndex2 = cb.SelectedIndex;
 			}
+			ShowInfo();
+			Calc();
 		}
 		private void ShowList()
 		{
 			if (_InfoList == null) return;
-			_InfoList.SuspendLayout();
-			_InfoList.Items.Clear();
-			if(m_mode==VMODE.OUT_FLAG)
+			if (m_mode==VMODE.OUT_FLAG)
 			{
-				foreach(AE_out_flags_info oi in Info)
-				{
+				//m_SelectedIndex = _InfoList.SelectedIndex;
+				_InfoList.SetInfos(Info);
+				if (m_SelectedIndex >= 0) _InfoList.SelectedIndex = m_SelectedIndex;
+			}
+			else
+			{
+				//m_SelectedIndex2 = _InfoList.SelectedIndex;
+				_InfoList.SetInfos(Info2);
+				if (m_SelectedIndex2 >= 0) _InfoList.SelectedIndex = m_SelectedIndex2;
 
+			}
+		}
+		private void ShowInfo()
+		{
+			if ((_InfoList == null)||(m_TextBox==null)|| (m_TextBox2 == null)) return;
+			string s = "";
+			string j = "";
+			if (m_mode == VMODE.OUT_FLAG)
+			{
+				if (m_SelectedIndex >= 0)
+				{
+					s = Info[m_SelectedIndex].DescriptionInfo;
+					j = Info[m_SelectedIndex].DescriptionJInfo;
+				}
+			}
+			else
+			{
+				if (m_SelectedIndex2 >= 0)
+				{
+					s = Info2[m_SelectedIndex2].DescriptionInfo;
+					j = Info2[m_SelectedIndex2].DescriptionJInfo;
+				}
+			}
+			m_TextBox.Text = s;
+			RefFlag = true;
+			m_TextBox2.Text = j;
+			RefFlag = false;
+		}
+		public void SetMode(VMODE md)
+		{
+			VMODE bak = m_mode;
+			PushCheked();
+			m_mode = md;
+			if(m_mode!=bak)
+			{
+				if (bak == VMODE.OUT_FLAG)
+				{
+					m_SelectedIndex = _InfoList.SelectedIndex;
+				}
+				else
+				{
+					m_SelectedIndex2 = _InfoList.SelectedIndex;
+				}
+				ShowList();
+				ShowInfo();
+				if (m_mode == VMODE.OUT_FLAG)
+				{
+					_InfoList.SelectedIndex = m_SelectedIndex;
+				}
+				else
+				{
+					_InfoList.SelectedIndex = m_SelectedIndex2;
+				}
+				Calc();
+			}
+		}
+		private string InfoToJson()
+		{
+			string ret = "";
+			if (Info.Count <= 0) return "[]";
+			foreach(AE_out_flags_info oi in Info)
+			{
+				if (ret != "") ret += ",";
+				ret += oi.ToJson();
+			}
+			return "[" + ret + "]";
+		}
+		private string Info2ToJson()
+		{
+			string ret = "";
+			if (Info2.Count <= 0) return "[]";
+			foreach (AE_out_flags_info oi in Info2)
+			{
+				if (ret != "") ret += ",";
+				ret += oi.ToJson();
+			}
+			return "[" + ret + "]";
+		}
+		public string ToJson()
+		{
+			string ret = "{\r\n";
+			ret += "\"Info\":" + InfoToJson() + ",\r\n";
+			ret += "\"Info2\":" + Info2ToJson() + "\r\n";
+			ret += "}\r\n";
+			return ret;
+
+		}
+		public void Info1FromJson(string js)
+		{
+			dynamic obj = DynamicJson.Parse(js);
+			if(obj.IsArray()==true)
+			{
+				Info.Clear();
+				foreach (dynamic o in obj)
+				{
+					AE_out_flags_info oi = new AE_out_flags_info(o);
+					Info.Add(oi);
 				}
 			}
 
+		}
+		public void Info2FromJson(string js)
+		{
+			dynamic obj = DynamicJson.Parse(js);
+			if (obj.IsArray() == true)
+			{
+				Info.Clear();
+				foreach (dynamic o in obj)
+				{
+					AE_out_flags_info oi = new AE_out_flags_info(o);
+					Info2.Add(oi);
+				}
+			}
+
+		}
+		public void ReDraw()
+		{
+			ShowList();
+			ShowInfo();
+			Calc();
+		}
+		public void FromJson(string js)
+		{
+			dynamic obj = DynamicJson.Parse(js);
+			if(obj.IsDefined("Info"))
+			{
+				if (obj["Info"].IsArray==true)
+				{
+					Info.Clear();
+					foreach(dynamic o in obj["Info"])
+					{
+						AE_out_flags_info oi = new AE_out_flags_info(o);
+						Info.Add(oi);
+					}
+
+				}
+			}
+			if (obj.IsDefined("Info2"))
+			{
+				if (obj["Info2"].IsArray == true)
+				{
+					Info2.Clear();
+					foreach (dynamic o in obj["Info2"])
+					{
+						AE_out_flags_info oi = new AE_out_flags_info(o);
+						Info2.Add(oi);
+					}
+
+				}
+			}
+			ShowList();
+			ShowInfo();
+			Calc();
+
+		}
+		public bool SaveJson(string p)
+		{
+			bool ret = false;
+			string js = ToJson();
+
+			try
+			{
+				File.WriteAllText(p, js, Encoding.GetEncoding("utf-8"));
+				ret = true;
+			}
+			catch
+			{
+				ret = false;
+			}
+			return ret;
+		}
+		public bool LoadJson(string p)
+		{
+			bool ret = false;
+			if (File.Exists(p) == false) return ret;
+			try
+			{
+				string s = File.ReadAllText(p, Encoding.GetEncoding("utf-8"));
+				FromJson(s);
+			}
+			catch
+			{
+				ret = false;
+			}
+
+			return ret;
 		}
 	}
 }

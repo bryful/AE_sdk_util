@@ -40,6 +40,7 @@ namespace BRY
 			if (appName == "") appName = Path.GetFileNameWithoutExtension(Application.ExecutablePath);
 			_filePath = Path.Combine(Application.UserAppDataPath, appName + ".json");
 		}
+		
 		public override string ToString()
 		{
 			return json.ToString();

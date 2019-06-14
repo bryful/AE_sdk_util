@@ -8,71 +8,113 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace AE_sdk_util
 {
 	public partial class AE_VersionForm : Form
 	{
 		private bool refFlag = false;
+		private AE_Version Ae_Version = new AE_Version();
 		public AE_VersionForm()
 		{
 			InitializeComponent();
-			CalcVersion();
-		}
-		private void CalcVersion()
-		{
-			if (refFlag == true) return;
-			refFlag = true;
-
-			if (cmbStage.SelectedIndex < 0) cmbStage.SelectedIndex = 0;
-			ulong ret = 0;
-			ulong b = (ulong)numMajor.Value;
-			ret += (((b >> 3) & 0xf) << 26) +((b & 0x7) << 19);
-			b = (ulong)numMinor.Value;
-			ret += (((b) & 0xf) << 15);
-			b = (ulong)numBug.Value;
-			ret += (((b) & 0xf) << 11);
-			b = (ulong)cmbStage.SelectedIndex;
-			if (b < 0) b = 0; else if (b > 3) b = 3;
-			ret += (b & 0x3) << 9;
-			b = (ulong)numBuild.Value;
-			ret += ((b & 0x1ff) << 0);
-
-			numVersion.Value = (decimal)ret;
+			cmbStage.SelectedIndex = 0;
+			numVersion.Value = (decimal)Ae_Version.AEVersion;
 			DispCode();
-			refFlag = false;
 		}
 
 		private void numMajor_ValueChanged(object sender, EventArgs e)
 		{
-			CalcVersion();
+			if (refFlag) return;
+			string nm = (string)((Control)sender).Name;
+			switch (nm)
+			{
+				case "numMajor":
+					Ae_Version.Major_Version = (ulong)numMajor.Value;
+					break;
+				case "numMinor":
+					Ae_Version.Minor_Version = (ulong)numMinor.Value;
+					break;
+				case "cmbStage":
+					if (cmbStage.SelectedIndex >= 0)
+					{
+						Ae_Version.Stage_Version = (ulong)cmbStage.SelectedIndex;
+					}
+					break;
+				case "numBug":
+					Ae_Version.Bug_Version = (ulong)numBug.Value;
+					break;
+				case "numBuild":
+					Ae_Version.Build_Version = (ulong)numBuild.Value;
+					break;
+			}
+			refFlag = true;
+			numVersion.Value = (decimal)Ae_Version.AEVersion;
+			refFlag = false;
+			DispCode();
 		}
 		private void DispCode()
 		{
-			string s =
-			"#define MAJOR_VERSION	{0}\r\n"+
-			"#define MINOR_VERSION	{1}\r\n" +
-			"#define BUG_VERSION	{2}\r\n" +
-			"#define STAGE_VERSION	{3}\r\n"+
-			"#define BUILD_VERSION	{4}\r\n"+
-			"\r\n" +
-			"\r\n" +
-			"//上の定数とVERSIONの値が違うとエラーになる\r\n" +
-			"\r\n" +
-			"#define VERSION {5}	//AE_Effects_Version.exeで上記計算して求める\r\n";
-
+			
 			if (cmbStage.SelectedIndex < 0) cmbStage.SelectedIndex = 0;
-			textBox1.Text = String.Format(
-				s,
-				numMajor.Value,
-				numMinor.Value,
-				numBug.Value,
-				cmbStage.SelectedIndex,
-				numBuild.Value,
-				numVersion.Value);
+
+			textBox1.Text = Ae_Version.ToString();
 		}
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
 
+		}
+
+		private void numVersion_ValueChanged(object sender, EventArgs e)
+		{
+			VersionChange();
+		}
+		private void VersionChange()
+		{
+			if (refFlag) return;
+			if (Ae_Version.AEVersion != (ulong)numVersion.Value)
+			{
+				refFlag = true;
+				Ae_Version.AEVersion = (ulong)numVersion.Value;
+				numMajor.Value = (decimal)Ae_Version.Major_Version;
+				numMinor.Value = (decimal)Ae_Version.Minor_Version;
+				cmbStage.SelectedIndex = (int)Ae_Version.Stage_Version;
+				numBug.Value = (decimal)Ae_Version.Bug_Version;
+				numBuild.Value = (decimal)Ae_Version.Build_Version;
+				refFlag = false;
+				DispCode();
+			}
+
+		}
+
+		private void numVersion_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			VersionChange();
+		}
+
+		private void numVersion_KeyUp(object sender, KeyEventArgs e)
+		{
+			VersionChange();
+		}
+
+		private void btnPVersion_Click(object sender, EventArgs e)
+		{
+			if(Clipboard.ContainsText())
+			{
+				ulong v = 0;
+				if(ulong.TryParse(Clipboard.GetText(),out v)==true)
+				{
+					if (numVersion.Value != (decimal)v)
+					{
+						numVersion.Value = (decimal)v;
+					}
+				}
+			}
+		}
+
+		private void btnCopyCode_Click(object sender, EventArgs e)
+		{
+			Clipboard.SetText(textBox1.Text);
 		}
 	}
 }

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Skelton.Properties {
+namespace AE_sdk_util.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Skelton.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Skelton.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AE_sdk_util.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,16 @@ namespace Skelton.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   {
+        ///&quot;Info&quot;:[{&quot;Checked&quot;:false,&quot;Description&quot;:&quot;This is the \&quot;empty\&quot; setting -- no outflags.\r\n\r\n&quot;,&quot;DescriptionJ&quot;:&quot;aaaa&quot;,&quot;Name&quot;:&quot;PF_OutFlag_NONE&quot;,&quot;Value&quot;:0,&quot;Use_PF_Cmds&quot;:&quot;&quot;},{&quot;Checked&quot;:false,&quot;Description&quot;:&quot;\r\nObsoleted in AE 2015 (does nothing when set).\r\n\r\nSet this flag if your effect expects its Macintosh resource fork to be open\r\nat any time other than global setup.  Note that this does not mean that\r\nthe resource fork will be kept open at all times, just whenever the\r\neffect is being executed. [残りの文字列は切り詰められました]&quot;; に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string def {
+            get {
+                return ResourceManager.GetString("def", resourceCulture);
             }
         }
     }
