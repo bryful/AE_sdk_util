@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AE_OutpufFlagsForm));
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.openDefinedFileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,8 +55,8 @@
 			this.tbInfoJ = new System.Windows.Forms.TextBox();
 			this.rbMode1 = new System.Windows.Forms.RadioButton();
 			this.rbMode2 = new System.Windows.Forms.RadioButton();
-			this.button1 = new System.Windows.Forms.Button();
-			this.button2 = new System.Windows.Forms.Button();
+			this.btnPeast = new System.Windows.Forms.Button();
+			this.btnCopyValue = new System.Windows.Forms.Button();
 			this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -287,25 +288,27 @@
 			this.rbMode2.Text = "out_flags2";
 			this.rbMode2.UseVisualStyleBackColor = true;
 			// 
-			// button1
+			// btnPeast
 			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(286, 27);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 15;
-			this.button1.Text = "Peast Value";
-			this.button1.UseVisualStyleBackColor = true;
+			this.btnPeast.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnPeast.Location = new System.Drawing.Point(286, 27);
+			this.btnPeast.Name = "btnPeast";
+			this.btnPeast.Size = new System.Drawing.Size(75, 23);
+			this.btnPeast.TabIndex = 15;
+			this.btnPeast.Text = "Peast Value";
+			this.btnPeast.UseVisualStyleBackColor = true;
+			this.btnPeast.Click += new System.EventHandler(this.btnPeast_Click);
 			// 
-			// button2
+			// btnCopyValue
 			// 
-			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button2.Location = new System.Drawing.Point(367, 27);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(75, 23);
-			this.button2.TabIndex = 16;
-			this.button2.Text = "copy Value";
-			this.button2.UseVisualStyleBackColor = true;
+			this.btnCopyValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnCopyValue.Location = new System.Drawing.Point(367, 27);
+			this.btnCopyValue.Name = "btnCopyValue";
+			this.btnCopyValue.Size = new System.Drawing.Size(75, 23);
+			this.btnCopyValue.TabIndex = 16;
+			this.btnCopyValue.Text = "copy Value";
+			this.btnCopyValue.UseVisualStyleBackColor = true;
+			this.btnCopyValue.Click += new System.EventHandler(this.btnCopyValue_Click);
 			// 
 			// fileToolStripMenuItem1
 			// 
@@ -405,13 +408,14 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(454, 561);
 			this.Controls.Add(this.splitContainer1);
-			this.Controls.Add(this.button2);
-			this.Controls.Add(this.button1);
+			this.Controls.Add(this.btnCopyValue);
+			this.Controls.Add(this.btnPeast);
 			this.Controls.Add(this.rbMode2);
 			this.Controls.Add(this.rbMode1);
 			this.Controls.Add(this.numOutflags);
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.menuStrip1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(470, 600);
 			this.Name = "AE_OutpufFlagsForm";
@@ -453,8 +457,8 @@
 		private System.Windows.Forms.RadioButton rbMode2;
 		private System.Windows.Forms.ToolStripMenuItem showVersionMenu;
 		private OutflagList outflagList1;
-		private System.Windows.Forms.Button button1;
-		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.Button btnPeast;
+		private System.Windows.Forms.Button btnCopyValue;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem openDefinedFileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exportDefinedFileToolStripMenuItem;

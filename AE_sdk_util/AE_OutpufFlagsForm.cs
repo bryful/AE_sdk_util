@@ -259,5 +259,31 @@ namespace AE_sdk_util
 		{
 			SizeSet();
 		}
+
+		private void btnPeast_Click(object sender, EventArgs e)
+		{
+			PeastValue();
+		}
+		public void PeastValue()
+		{
+			if(Clipboard.ContainsText())
+			{
+				ulong v;
+				if (ulong.TryParse(Clipboard.GetText(),out v)==true)
+				{
+					numOutflags.Value = (decimal)v;
+				}
+			}
+		}
+
+		private void btnCopyValue_Click(object sender, EventArgs e)
+		{
+			CopyValue();
+		}
+		public void CopyValue()
+		{
+			Clipboard.SetText(String.Format("{0}", (ulong)numOutflags.Value));
+		}
+
 	}
 }
