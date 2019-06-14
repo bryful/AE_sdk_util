@@ -32,6 +32,9 @@
 			this.fileToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.openDefinedFileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportDefinedFileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+			this.importAEEffecsHToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.quitToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.showAEVersionEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,13 +50,10 @@
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.tbInfo = new System.Windows.Forms.TextBox();
-			this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+			this.numOutflags = new System.Windows.Forms.NumericUpDown();
 			this.tbInfoJ = new System.Windows.Forms.TextBox();
 			this.rbMode1 = new System.Windows.Forms.RadioButton();
 			this.rbMode2 = new System.Windows.Forms.RadioButton();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.outflagList1 = new AE_sdk_util.OutflagList();
 			this.button1 = new System.Windows.Forms.Button();
 			this.button2 = new System.Windows.Forms.Button();
 			this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,8 +64,15 @@
 			this.openDefinedFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportDefinedFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.quitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.textBoxV = new System.Windows.Forms.TextBox();
+			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.outflagList1 = new AE_sdk_util.OutflagList();
 			this.menuStrip1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numOutflags)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+			this.splitContainer1.Panel1.SuspendLayout();
+			this.splitContainer1.Panel2.SuspendLayout();
+			this.splitContainer1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -76,7 +83,7 @@
             this.helpToolStripMenuItem2});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(494, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(454, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -85,6 +92,9 @@
 			this.fileToolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openDefinedFileToolStripMenuItem1,
             this.exportDefinedFileToolStripMenuItem1,
+            this.toolStripMenuItem1,
+            this.importAEEffecsHToolStripMenuItem,
+            this.toolStripMenuItem2,
             this.quitToolStripMenuItem2});
 			this.fileToolStripMenuItem2.Name = "fileToolStripMenuItem2";
 			this.fileToolStripMenuItem2.Size = new System.Drawing.Size(37, 20);
@@ -93,20 +103,37 @@
 			// openDefinedFileToolStripMenuItem1
 			// 
 			this.openDefinedFileToolStripMenuItem1.Name = "openDefinedFileToolStripMenuItem1";
-			this.openDefinedFileToolStripMenuItem1.Size = new System.Drawing.Size(170, 22);
+			this.openDefinedFileToolStripMenuItem1.Size = new System.Drawing.Size(174, 22);
 			this.openDefinedFileToolStripMenuItem1.Text = "Open DefinedFile";
 			this.openDefinedFileToolStripMenuItem1.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
 			// 
 			// exportDefinedFileToolStripMenuItem1
 			// 
 			this.exportDefinedFileToolStripMenuItem1.Name = "exportDefinedFileToolStripMenuItem1";
-			this.exportDefinedFileToolStripMenuItem1.Size = new System.Drawing.Size(170, 22);
+			this.exportDefinedFileToolStripMenuItem1.Size = new System.Drawing.Size(174, 22);
 			this.exportDefinedFileToolStripMenuItem1.Text = "Export DefinedFile";
+			// 
+			// toolStripMenuItem1
+			// 
+			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(171, 6);
+			// 
+			// importAEEffecsHToolStripMenuItem
+			// 
+			this.importAEEffecsHToolStripMenuItem.Name = "importAEEffecsHToolStripMenuItem";
+			this.importAEEffecsHToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.importAEEffecsHToolStripMenuItem.Text = "Import AE_Effecs.H";
+			this.importAEEffecsHToolStripMenuItem.Click += new System.EventHandler(this.importAEEffecsHToolStripMenuItem_Click);
+			// 
+			// toolStripMenuItem2
+			// 
+			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(171, 6);
 			// 
 			// quitToolStripMenuItem2
 			// 
 			this.quitToolStripMenuItem2.Name = "quitToolStripMenuItem2";
-			this.quitToolStripMenuItem2.Size = new System.Drawing.Size(170, 22);
+			this.quitToolStripMenuItem2.Size = new System.Drawing.Size(174, 22);
 			this.quitToolStripMenuItem2.Text = "Quit";
 			this.quitToolStripMenuItem2.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
 			// 
@@ -200,43 +227,39 @@
 			// 
 			// statusStrip1
 			// 
-			this.statusStrip1.Location = new System.Drawing.Point(0, 575);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 539);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(494, 22);
+			this.statusStrip1.Size = new System.Drawing.Size(454, 22);
 			this.statusStrip1.TabIndex = 1;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
 			// tbInfo
 			// 
-			this.tbInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.tbInfo.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.tbInfo.Location = new System.Drawing.Point(13, 304);
+			this.tbInfo.Location = new System.Drawing.Point(8, 3);
 			this.tbInfo.Multiline = true;
 			this.tbInfo.Name = "tbInfo";
 			this.tbInfo.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.tbInfo.Size = new System.Drawing.Size(469, 128);
+			this.tbInfo.Size = new System.Drawing.Size(447, 74);
 			this.tbInfo.TabIndex = 6;
 			// 
-			// numericUpDown1
+			// numOutflags
 			// 
-			this.numericUpDown1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.numericUpDown1.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.numericUpDown1.Location = new System.Drawing.Point(297, 59);
-			this.numericUpDown1.Name = "numericUpDown1";
-			this.numericUpDown1.Size = new System.Drawing.Size(185, 23);
-			this.numericUpDown1.TabIndex = 7;
+			this.numOutflags.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.numOutflags.Font = new System.Drawing.Font("MS UI Gothic", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.numOutflags.Location = new System.Drawing.Point(259, 56);
+			this.numOutflags.Name = "numOutflags";
+			this.numOutflags.Size = new System.Drawing.Size(185, 28);
+			this.numOutflags.TabIndex = 7;
 			// 
 			// tbInfoJ
 			// 
-			this.tbInfoJ.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.tbInfoJ.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.tbInfoJ.Location = new System.Drawing.Point(15, 458);
+			this.tbInfoJ.Location = new System.Drawing.Point(12, 83);
 			this.tbInfoJ.Multiline = true;
 			this.tbInfoJ.Name = "tbInfoJ";
 			this.tbInfoJ.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.tbInfoJ.Size = new System.Drawing.Size(469, 100);
+			this.tbInfoJ.Size = new System.Drawing.Size(430, 109);
 			this.tbInfoJ.TabIndex = 8;
 			// 
 			// rbMode1
@@ -244,7 +267,7 @@
 			this.rbMode1.AutoSize = true;
 			this.rbMode1.Checked = true;
 			this.rbMode1.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.rbMode1.Location = new System.Drawing.Point(11, 39);
+			this.rbMode1.Location = new System.Drawing.Point(10, 56);
 			this.rbMode1.Name = "rbMode1";
 			this.rbMode1.Size = new System.Drawing.Size(83, 20);
 			this.rbMode1.TabIndex = 9;
@@ -257,49 +280,17 @@
 			// 
 			this.rbMode2.AutoSize = true;
 			this.rbMode2.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.rbMode2.Location = new System.Drawing.Point(100, 38);
+			this.rbMode2.Location = new System.Drawing.Point(99, 56);
 			this.rbMode2.Name = "rbMode2";
 			this.rbMode2.Size = new System.Drawing.Size(91, 20);
 			this.rbMode2.TabIndex = 10;
 			this.rbMode2.Text = "out_flags2";
 			this.rbMode2.UseVisualStyleBackColor = true;
 			// 
-			// label2
-			// 
-			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(13, 286);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(63, 12);
-			this.label2.TabIndex = 12;
-			this.label2.Text = "Description";
-			// 
-			// label3
-			// 
-			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(16, 439);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(41, 12);
-			this.label3.TabIndex = 13;
-			this.label3.Text = "日本語";
-			// 
-			// outflagList1
-			// 
-			this.outflagList1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.outflagList1.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.outflagList1.FormattingEnabled = true;
-			this.outflagList1.Location = new System.Drawing.Point(13, 88);
-			this.outflagList1.Name = "outflagList1";
-			this.outflagList1.Size = new System.Drawing.Size(467, 184);
-			this.outflagList1.TabIndex = 14;
-			// 
 			// button1
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(297, 30);
+			this.button1.Location = new System.Drawing.Point(286, 27);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(75, 23);
 			this.button1.TabIndex = 15;
@@ -309,7 +300,7 @@
 			// button2
 			// 
 			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button2.Location = new System.Drawing.Point(405, 30);
+			this.button2.Location = new System.Drawing.Point(367, 27);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(75, 23);
 			this.button2.TabIndex = 16;
@@ -368,22 +359,57 @@
 			this.quitToolStripMenuItem1.Text = "Quit";
 			this.quitToolStripMenuItem1.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
 			// 
+			// textBoxV
+			// 
+			this.textBoxV.Location = new System.Drawing.Point(20, 193);
+			this.textBoxV.Name = "textBoxV";
+			this.textBoxV.ReadOnly = true;
+			this.textBoxV.Size = new System.Drawing.Size(428, 19);
+			this.textBoxV.TabIndex = 17;
+			// 
+			// splitContainer1
+			// 
+			this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.splitContainer1.Location = new System.Drawing.Point(0, 94);
+			this.splitContainer1.Name = "splitContainer1";
+			this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			// 
+			// splitContainer1.Panel1
+			// 
+			this.splitContainer1.Panel1.Controls.Add(this.outflagList1);
+			this.splitContainer1.Panel1.Controls.Add(this.textBoxV);
+			// 
+			// splitContainer1.Panel2
+			// 
+			this.splitContainer1.Panel2.Controls.Add(this.tbInfo);
+			this.splitContainer1.Panel2.Controls.Add(this.tbInfoJ);
+			this.splitContainer1.Size = new System.Drawing.Size(444, 442);
+			this.splitContainer1.SplitterDistance = 221;
+			this.splitContainer1.SplitterWidth = 6;
+			this.splitContainer1.TabIndex = 18;
+			this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
+			// 
+			// outflagList1
+			// 
+			this.outflagList1.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.outflagList1.FormattingEnabled = true;
+			this.outflagList1.Location = new System.Drawing.Point(22, 3);
+			this.outflagList1.Name = "outflagList1";
+			this.outflagList1.Size = new System.Drawing.Size(428, 184);
+			this.outflagList1.TabIndex = 14;
+			// 
 			// AE_OutpufFlagsForm
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(494, 597);
+			this.ClientSize = new System.Drawing.Size(454, 561);
+			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.button1);
-			this.Controls.Add(this.outflagList1);
-			this.Controls.Add(this.label3);
-			this.Controls.Add(this.label2);
 			this.Controls.Add(this.rbMode2);
 			this.Controls.Add(this.rbMode1);
-			this.Controls.Add(this.tbInfoJ);
-			this.Controls.Add(this.numericUpDown1);
-			this.Controls.Add(this.tbInfo);
+			this.Controls.Add(this.numOutflags);
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
@@ -392,11 +418,18 @@
 			this.Text = "AE_sdk_util";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
 			this.Load += new System.EventHandler(this.Form1_Load);
+			this.SizeChanged += new System.EventHandler(this.AE_OutpufFlagsForm_SizeChanged);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numOutflags)).EndInit();
+			this.splitContainer1.Panel1.ResumeLayout(false);
+			this.splitContainer1.Panel1.PerformLayout();
+			this.splitContainer1.Panel2.ResumeLayout(false);
+			this.splitContainer1.Panel2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+			this.splitContainer1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -414,12 +447,10 @@
 		private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private System.Windows.Forms.TextBox tbInfo;
-		private System.Windows.Forms.NumericUpDown numericUpDown1;
+		private System.Windows.Forms.NumericUpDown numOutflags;
 		private System.Windows.Forms.TextBox tbInfoJ;
 		private System.Windows.Forms.RadioButton rbMode1;
 		private System.Windows.Forms.RadioButton rbMode2;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.ToolStripMenuItem showVersionMenu;
 		private OutflagList outflagList1;
 		private System.Windows.Forms.Button button1;
@@ -440,6 +471,11 @@
 		private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem showAEVersionEditorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem showVersionToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem importAEEffecsHToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+		private System.Windows.Forms.TextBox textBoxV;
+		private System.Windows.Forms.SplitContainer splitContainer1;
 	}
 }
 

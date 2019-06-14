@@ -16,7 +16,6 @@ namespace AE_sdk_util
 		public string Description = "";
 		public string DescriptionJ = "";
 		public string Use_PF_Cmds = "";
-		public bool Checked = false;
 		/// <summary>
 		/// 
 		/// </summary>
@@ -41,7 +40,6 @@ namespace AE_sdk_util
 			Description = info.Description;
 			DescriptionJ = info.DescriptionJ;
 			Use_PF_Cmds = info.Use_PF_Cmds;
-			Checked = info.Checked;
 		}
 		/// <summary>
 		/// 
@@ -58,52 +56,18 @@ namespace AE_sdk_util
 				return String.Format("{0}\tvaleu:{1}", Name, Value); 
 			}
 		}
-		public string Detil
-		{
-			get
-			{
-				return String.Format(
-					"{0} : valei:{1}\r\n" +
-					"used:{2}\r\n\r\n" +
-					"{3}",
-					Name, Value, Use_PF_Cmds,Description
-					);
-			}
-		}
-		public string DetilJ
-		{
-			get
-			{
-				return String.Format(
-					"{0} : valeu:{1}\r\n" +
-					"used:{2}\r\n\r\n" +
-					"{3}",
-					Name, Value, Use_PF_Cmds, DescriptionJ
-					);
-			}
-		}
-		public string DescriptionInfo
+
+		public string Use_Info
 		{
 			get
 			{
 				string ret = "";
-				ret += Name + "\r\n";
-				ret += String.Format("value:{0}\r\n", Value);
-				ret += "Used Command: " + Use_PF_Cmds +"\r\n"; 
-				ret += "\r\n";
-				ret += Description;
+				ret += String.Format("value:{0}", Value);
+				ret += "\tUsed Command: " + Use_PF_Cmds; 
 				return ret;
 			}
 		}
-		public string DescriptionJInfo
-		{
-			get
-			{
-				string ret = "";
-				ret += DescriptionJ;
-				return ret;
-			}
-		}
+
 		private string enc(string s)
 		{
 			string ret = s;
@@ -116,7 +80,6 @@ namespace AE_sdk_util
 		public string ToJson()
 		{
 			string f = "{";
-			f += "\"Checked\":" + String.Format("{0},", Checked).ToLower();
 			f += "\"Description\":\"" + enc(Description) + "\",";
 			f += "\"DescriptionJ\":\"" + enc(DescriptionJ) + "\",";
 			f += "\"Name\":\"" + Name + "\",";
@@ -125,12 +88,25 @@ namespace AE_sdk_util
 			f += "}";
 			return f;
 		}
+		public string DescriptionToJson()
+		{
+			string f = "{";
+			f += "\"Description\":\"" + enc(Description) + "\",";
+			f += "\"DescriptionJ\":\"" + enc(DescriptionJ) + "\",";
+			f += "}";
+			return f;
+		}
 		public void FromJson(dynamic ret)
 		{
 			if (ret.IsDefined("Name")) Name = ret["Name"];
 			if (ret.IsDefined("Value")) Value = (int)ret["Value"];
 			if (ret.IsDefined("Use_PF_Cmds")) Use_PF_Cmds = ret["Use_PF_Cmds"];
-			if (ret.IsDefined("Checked")) Checked = (bool)ret["Checked"];
+			if (ret.IsDefined("Description")) Description = ret["Description"];
+			if (ret.IsDefined("DescriptionJ")) DescriptionJ = ret["DescriptionJ"];
+
+		}
+		public void DescriptionFromJson(dynamic ret)
+		{
 			if (ret.IsDefined("Description")) Description = ret["Description"];
 			if (ret.IsDefined("DescriptionJ")) DescriptionJ = ret["DescriptionJ"];
 

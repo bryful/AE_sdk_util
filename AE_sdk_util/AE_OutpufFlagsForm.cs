@@ -58,13 +58,17 @@ namespace AE_sdk_util
 				if (ok) this.Size = sz;
 				Point p = pref.GetPoint("Point", out ok);
 				if (ok) this.Location = p;
+				int bd = pref.GetInt("Border", out ok);
+				if (ok) this.splitContainer1.SplitterDistance = bd;
+
 			}
 			this.Text = Path.GetFileNameWithoutExtension(Application.ExecutablePath);
 
 			aeh.InfoList = outflagList1;
 			aeh.TextBox = tbInfo;
 			aeh.TextBox2 = tbInfoJ;
-			aeh.NumericUpDown = numericUpDown1;
+			aeh.TextBoxV = textBoxV;
+			aeh.NumOutflags = numOutflags;
 
 			string path = Path.Combine(Application.UserAppDataPath, Path.GetFileNameWithoutExtension(Application.ExecutablePath) + ".def");
 			if (aeh.LoadJson(path)==false)
@@ -85,6 +89,7 @@ namespace AE_sdk_util
 			JsonPref pref = new JsonPref();
 			pref.SetSize("Size", this.Size);
 			pref.SetPoint("Point", this.Location);
+			pref.SetInt("Border", splitContainer1.SplitterDistance);
 
 			pref.SetIntArray("IntArray", new int[] { 8, 9, 7 });
 			pref.Save();
@@ -200,6 +205,59 @@ namespace AE_sdk_util
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 
+		}
+
+		private void importAEEffecsHToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			string fn = "AE_Effect.h";
+			using (OpenFileDialog dlg = new OpenFileDialog())
+			{
+				dlg.FileName = fn;
+				if(dlg.ShowDialog()==DialogResult.OK)
+				{
+					string p = dlg.FileName;
+					string fn2 = Path.GetFileName(p);
+					if(fn2!= fn)
+					{
+						MessageBox.Show(fn2 + " is not " + fn, "Warning", MessageBoxButtons.OK);
+						return;
+					}
+					aeh.AE_Effect_H_Load(p);
+
+				}
+			}
+		}
+		public void SizeSet()
+		{
+			splitContainer1.Location = new Point(0, 90);
+			int w = ClientSize.Width;
+			int h = ClientSize.Height;
+			splitContainer1.Size = new Size(w, h - 120);
+
+			w = splitContainer1.Panel1.Width;
+			h = splitContainer1.Panel1.Height;
+			outflagList1.Location = new Point(5, 0);
+			outflagList1.Size = new Size(w-15, h - 40);
+			textBoxV.Location = new Point(5, h - 40 + 6);
+			textBoxV.Width = w-10;
+			w = splitContainer1.Panel2.Width;
+			h = splitContainer1.Panel2.Height;
+			tbInfo.Location = new Point(5, 0);
+			tbInfo.Size = new Size(w-15, h / 2 - 5);
+			tbInfoJ.Location = new Point(5, h / 2);
+			tbInfoJ.Size = new Size(w-15, h / 2 - 5);
+
+
+		}
+
+		private void AE_OutpufFlagsForm_SizeChanged(object sender, EventArgs e)
+		{
+			SizeSet();
+		}
+
+		private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
+		{
+			SizeSet();
 		}
 	}
 }

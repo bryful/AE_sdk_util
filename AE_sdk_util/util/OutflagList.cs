@@ -18,14 +18,13 @@ namespace AE_sdk_util
 		}
 		public int AddInfo(AE_out_flags_info info)
 		{
-			return this.Items.Add(info.Name, info.Checked);
+			return this.Items.Add(info.Name);
 		}
 		public void SetInfo(int idx, AE_out_flags_info info)
 		{
 			if((idx>=0)&&(idx<Items.Count))
 			{
 				Items[idx] = info.Name;
-				SetItemChecked(idx, info.Checked);
 			}
 		}
 		/// <summary>
