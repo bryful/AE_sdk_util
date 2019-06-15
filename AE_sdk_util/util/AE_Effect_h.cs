@@ -328,8 +328,8 @@ namespace AE_sdk_util
 				if(b)
 				{
 					ulong bas = 1;
-					ulong i3 = bas << i;
-					r += i3;
+					ulong i3 = bas << (i-1);
+					r |= i3;
 				}
 			}
 
