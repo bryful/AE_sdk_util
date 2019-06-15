@@ -62,8 +62,9 @@ namespace AE_sdk_util
 			get
 			{
 				string ret = "";
-				ret += String.Format("value:{0}", Value);
-				ret += "\tUsed Command: " + Use_PF_Cmds; 
+				ret += String.Format("value:{0} [", Value);
+				ret += Name;
+				ret += "] Used Command: " + Use_PF_Cmds; 
 				return ret;
 			}
 		}

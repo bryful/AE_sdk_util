@@ -175,9 +175,16 @@ namespace AE_sdk_util
 		}
 		public void ShowVersionEditor()
 		{
-			if (versionForm == null) versionForm = new AE_VersionForm();
-			versionForm.FormClosed += VersionForm_FormClosed;
+			if (versionForm == null)
+			{
+				versionForm = new AE_VersionForm();
+				versionForm.FormClosed += VersionForm_FormClosed;
+			}
 			versionForm.Show();
+			versionForm.Activate();
+			versionForm.TopMost = true;
+			versionForm.TopMost = false;
+
 		}
 
 		private void VersionForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -285,5 +292,12 @@ namespace AE_sdk_util
 			Clipboard.SetText(String.Format("{0}", (ulong)numOutflags.Value));
 		}
 
+		private void AE_OutpufFlagsForm_Activated(object sender, EventArgs e)
+		{
+			if(versionForm!=null)
+			{
+				versionForm.Activate();
+			}
+		}
 	}
 }

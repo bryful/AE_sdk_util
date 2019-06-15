@@ -420,6 +420,7 @@
 			this.MinimumSize = new System.Drawing.Size(470, 600);
 			this.Name = "AE_OutpufFlagsForm";
 			this.Text = "AE_sdk_util";
+			this.Activated += new System.EventHandler(this.AE_OutpufFlagsForm_Activated);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.SizeChanged += new System.EventHandler(this.AE_OutpufFlagsForm_SizeChanged);
