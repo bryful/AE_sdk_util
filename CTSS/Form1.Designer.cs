@@ -304,7 +304,7 @@ namespace CTSS
 			this.MaximumSize = new System.Drawing.Size(3000, 460);
 			this.MinimumSize = new System.Drawing.Size(450, 460);
 			this.Name = "Form1";
-			this.Text = "Form1";
+			this.Text = "CheckThreadSafeSymbols.exe Frontend";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.gbOptions.ResumeLayout(false);
