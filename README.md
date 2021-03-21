@@ -7,6 +7,7 @@ After Effects SDKで必要な**Output Flags**と**Version**を計算するアプ
 AE2020以降にも対応できるようにしました。<br>
 **Import_AE_EffectH**で、**AE_Effect.ｈ**を読み込んで使用します。<br>
 <br>
+以下のLinkからWindowsバイナリがDL出来ます。<br>
 [ae_OutputFlags.zip](https://bit.ly/3r8utMV)<br>
 
 ## Usage
