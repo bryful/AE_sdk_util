@@ -1,28 +1,24 @@
 ﻿# AE_sdk_util
 After Effects SDKで必要な**Output Flags**と**Version**を計算するアプリです。
-  
-![ae_sdk_util](https://user-images.githubusercontent.com/50650451/59544075-21dd1680-8f4a-11e9-87a7-db03a6fd43e0.png)
 
-いろいろやってるうちに機能が増えました。  
-out_flagの説明をAE_Effect.hからインポートして表示する機能とそれを編集保存する機能を付けました。  
-  
-デフォルトで僕が取り込んだデータを仕込んでありますが、必要に応じて説明を追記保存することができます。
-保存は自動的に行います。別途に保存、読み込みも可能です。  
-  
+![ae_sdk_util](AE_OutputFlags.png)
+
+.Net core5にプラットフォームを変えました。
+AE2020以降にも対応できるようにしました。
+**Import_AE_EffectH**で、**AE_Effect.ｈ**を読み込んで使用します。
 
 ## Usage
-特に説明しなく大丈夫と思います。  
-  
-AE_Versionはメニューから選んで表示させます。
+特に説明しなく大丈夫と思います。
+  **AE_Version**は**show Version Dialog**から表示させます。
 
 
 ## License
-This software is released under the MIT License, see LICENSE. 
+This software is released under the MIT License, see LICENSE.
 
 ## Authors
 
-bry-ful(Hiroshi Furuhashi) http://bryful.yuzu.bz/  
-twitter:[bryful](https://twitter.com/bryful)  
-bryful@gmail.com  
+bry-ful(Hiroshi Furuhashi)
+twitter:[bryful](https://twitter.com/bryful)
+bryful@gmail.com
 
 # References

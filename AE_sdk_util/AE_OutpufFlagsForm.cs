@@ -299,5 +299,10 @@ namespace AE_sdk_util
 				versionForm.Activate();
 			}
 		}
+
+		private void outflagList1_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

@@ -396,10 +396,11 @@
 			// 
 			this.outflagList1.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.outflagList1.FormattingEnabled = true;
-			this.outflagList1.Location = new System.Drawing.Point(22, 3);
+			this.outflagList1.Location = new System.Drawing.Point(9, 3);
 			this.outflagList1.Name = "outflagList1";
 			this.outflagList1.Size = new System.Drawing.Size(428, 184);
 			this.outflagList1.TabIndex = 14;
+			this.outflagList1.SelectedIndexChanged += new System.EventHandler(this.outflagList1_SelectedIndexChanged);
 			// 
 			// AE_OutpufFlagsForm
 			// 

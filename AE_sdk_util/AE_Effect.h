@@ -75,12 +75,20 @@
 #endif
 
 #include "A.h"
-
+#if defined(__APPLE__)
+#include <CoreFoundation/CFBase.h>
+#endif
 #include <adobesdk/config/PreConfig.h>
 
 
 #ifdef __cplusplus
 	extern "C" {
+#endif
+
+#ifndef __cplusplus
+    #if defined(__ANDROID__)
+        #include <stdbool.h>
+    #endif
 #endif
 
 /** -------------------- Version Information ----------------------------------
@@ -165,6 +173,21 @@ typedef A_long PF_Stage;
 **/
 
 //CC
+#define PF_AE171_PLUG_IN_VERSION			13	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+#define PF_AE171_PLUG_IN_SUBVERS			20	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+
+#define PF_AE170_PLUG_IN_VERSION			13	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+#define PF_AE170_PLUG_IN_SUBVERS			18	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+
+#define PF_AE161_PLUG_IN_VERSION			13	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+#define PF_AE161_PLUG_IN_SUBVERS			17	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+
+#define PF_AE160_PLUG_IN_VERSION			13	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+#define PF_AE160_PLUG_IN_SUBVERS			16	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+
+#define PF_AE151_PLUG_IN_VERSION			13	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+#define PF_AE151_PLUG_IN_SUBVERS			15	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+
 #define PF_AE150_PLUG_IN_VERSION			13	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
 #define PF_AE150_PLUG_IN_SUBVERS			15	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
 
@@ -236,8 +259,8 @@ typedef A_long PF_Stage;
 #define PF_AE31_PLUG_IN_SUBVERS				6
 #define PF_AE31_PLUG_IN_SUBVERS_STRICTIFY	8
 
-#define PF_AE_PLUG_IN_VERSION				PF_AE150_PLUG_IN_VERSION	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
-#define PF_AE_PLUG_IN_SUBVERS				PF_AE150_PLUG_IN_SUBVERS	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+#define PF_AE_PLUG_IN_VERSION				PF_AE171_PLUG_IN_VERSION	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+#define PF_AE_PLUG_IN_SUBVERS				PF_AE171_PLUG_IN_SUBVERS	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
 
 /* Note:	AE3.1 will drive any v11.x plugin
 			AE4.0 will drive any v11.x or v12.x plugin
@@ -569,10 +592,8 @@ typedef A_long PF_WorldFlags;
 
 	PF_OutFlag_NOP_RENDER
 	
-		At PF_Cmd_FRAME_SETUP time, if the render would result in no changes to the source
-		image (or audio?), set this flag to save some rendering time.
-		
-		Should mean that PF_Cmd_RENDER is never sent, but in fact this flag is currently ignored!
+		Set this flag in PF_Cmd_GLOBAL_SETUP if the render would never result in changes
+ 		to the source image (or audio?). For example, an expression control would set this.
 
 	PF_OutFlag_CUSTOM_UI
 
@@ -784,6 +805,23 @@ typedef A_long PF_WorldFlags;
 		Just be sure to mix in everything that can uniquely affect resulting rendered pixels (that is not already
 		an AE stream parameter).  But don't mixin things that are disabled and have no render effect  (this 
 		results in less cache efficiency).
+
+	PF_OutFlag2_SUPPORTS_THREADED_RENDERING
+		Indicates the effect supports rendering on multiple threads at the same time. Single or multiple
+		applications of this effect on a layer can be called to render at the same time on multiple threads.
+
+		UI selectors are still sent on the main thread, however Sequence Setup, Sequence Resetup, Sequence SetDown,
+		PreRender, and Render may be sent on multiple threads at the same time as the UI selectors are being handled
+		so all of these selectors must be thread safe.
+
+		Global Setup and Global Setdown selectors are unaffected by this flag.  Regardless whether this flag is set
+		or not, they will only be sent on the main thread, and will not be sent at the same time as any other selectors.
+
+		If the effect sets PF_OutFlag_SEQUENCE_DATA_NEEDS_FLATTENING indicating the sequence data needs flattening
+		then it must also set PF_OutFlag2_SUPPORTS_GET_FLATTENED_SEQUENCE_DATA.
+		
+		Writing to sequence_data during rendering is not supported with threaded rendering. Results are undefined.
+
 **/
 
 enum {
@@ -808,7 +846,7 @@ enum {
 	PF_OutFlag_CUSTOM_UI						= 1L << 15,		// PF_Cmd_GLOBAL_SETUP
 	PF_OutFlag_RESERVED7						= 1L << 16,
 	PF_OutFlag_REFRESH_UI						= 1L << 17,		// PF_Cmd_EVENT, PF_Cmd_RENDER, PF_Cmd_DO_DIALOG
-	PF_OutFlag_NOP_RENDER						= 1L << 18,		// PF_Cmd_FRAME_SETUP
+	PF_OutFlag_NOP_RENDER						= 1L << 18,		// PF_Cmd_GLOBAL_SETUP
 	PF_OutFlag_I_USE_SHUTTER_ANGLE				= 1L << 19,		// PF_Cmd_GLOBAL_SETUP, PF_Cmd_QUERY_DYNAMIC_FLAGS
 	PF_OutFlag_I_USE_AUDIO						= 1L << 20,		// PF_Cmd_GLOBAL_SETUP
 	PF_OutFlag_I_AM_OBSOLETE					= 1L << 21,		// PF_Cmd_GLOBAL_SETUP
@@ -834,7 +872,7 @@ enum {
 	PF_OutFlag2_I_USE_3D_CAMERA					= 1L << 1,		// PF_Cmd_GLOBAL_SETUP, PF_Cmd_QUERY_DYNAMIC_FLAGS
 	PF_OutFlag2_I_USE_3D_LIGHTS					= 1L << 2,		// PF_Cmd_GLOBAL_SETUP, PF_Cmd_QUERY_DYNAMIC_FLAGS
 	PF_OutFlag2_PARAM_GROUP_START_COLLAPSED_FLAG= 1L << 3,		// PF_Cmd_GLOBAL_SETUP
-	PF_OutFlag2_I_AM_THREADSAFE					= 1L << 4,		// PF_Cmd_GLOBAL_SETUP
+	PF_OutFlag2_I_AM_THREADSAFE					= 1L << 4,		// PF_Cmd_GLOBAL_SETUP (unused)
 	PF_OutFlag2_CAN_COMBINE_WITH_DESTINATION	= 1L << 5,		// Premiere only (as of AE 6.0)
 	PF_OutFlag2_DOESNT_NEED_EMPTY_PIXELS		= 1L << 6,		// PF_Cmd_GLOBAL_SETUP, PF_Cmd_QUERY_DYNAMIC_FLAGS
 	PF_OutFlag2_REVEALS_ZERO_ALPHA				= 1L << 7,		// PF_Cmd_GLOBAL_SETUP, PF_Cmd_QUERY_DYNAMIC_FLAGS
@@ -845,15 +883,18 @@ enum {
 	PF_OutFlag2_I_USE_COLORSPACE_ENUMERATION	= 1L << 13,		// PF_Cmd_GLOBAL_SETUP, not implemented in AE7 (may be impl in Premiere Pro)
 	PF_OutFlag2_I_AM_DEPRECATED					= 1L << 14,		// PF_Cmd_GLOBAL_SETUP
 	PF_OutFlag2_PPRO_DO_NOT_CLONE_SEQUENCE_DATA_FOR_RENDER	= 1L << 15,		// PF_Cmd_GLOBAL_SETUP, Premiere only, CS4.1 and later
-	PF_OutFlag2_RESERVED10						= 1L << 16,		// PF_Cmd_GLOBAL_SETUP
+	PF_OutFjlag2_RESERVED10						= 1L << 16,		// PF_Cmd_GLOBAL_SETUP
 	PF_OutFlag2_AUTOMATIC_WIDE_TIME_INPUT		= 1L << 17,		// PF_Cmd_GLOBAL_SETUP, falls back to PF_OutFlag_WIDE_TIME_INPUT if not PF_OutFlag2_SUPPORTS_SMART_RENDER
 	PF_OutFlag2_I_USE_TIMECODE					= 1L << 18,		// PF_Cmd_GLOBAL_SETUP
 	PF_OutFlag2_DEPENDS_ON_UNREFERENCED_MASKS	= 1L << 19,		// PF_Cmd_GLOBAL_SETUP, PF_Cmd_QUERY_DYNAMIC_FLAGS
 	PF_OutFlag2_OUTPUT_IS_WATERMARKED			= 1L << 20,		// PF_Cmd_GLOBAL_SETUP, PF_Cmd_QUERY_DYNAMIC_FLAGS
 	PF_OutFlag2_I_MIX_GUID_DEPENDENCIES			= 1L << 21,		// PF_Cmd_GLOBAL_SETUP
-	PF_OutFlag2_AE13_5_THREADSAFE				= 1L << 22,		// PF_Cmd_GLOBAL_SETUP
-	PF_OutFlag2_SUPPORTS_GET_FLATTENED_SEQUENCE_DATA	= 1L << 23,		// PF_Cmd_GLOBAL_SETUP, support required if PF_OutFlag2_AE13_5_THREADSAFE is set
-	PF_OutFlag2_CUSTOM_UI_ASYNC_MANAGER			= 1L << 24		// PF_Cmd_GLOBAL_SETUP
+	PF_OutFlag2_AE13_5_THREADSAFE				= 1L << 22,		// PF_Cmd_GLOBAL_SETUP (unused)
+	PF_OutFlag2_SUPPORTS_GET_FLATTENED_SEQUENCE_DATA	= 1L << 23,		// PF_Cmd_GLOBAL_SETUP, support required if both PF_OutFlag_SEQUENCE_DATA_NEEDS_FLATTENING and PF_OutFlag2_SUPPORTS_THREADED_RENDERING is set
+	PF_OutFlag2_CUSTOM_UI_ASYNC_MANAGER			= 1L << 24,		// PF_Cmd_GLOBAL_SETUP
+	PF_OutFlag2_SUPPORTS_GPU_RENDER_F32			= 1L << 25,		// PF_Cmd_GLOBAL_SETUP,
+	PF_OutFlag2_RESERVED12						= 1L << 26,		// PF_Cmd_GLOBAL_SETUP
+	PF_OutFlag2_SUPPORTS_THREADED_RENDERING		= 1L << 27		// PF_Cmd_GLOBAL_SETUP
 };
 typedef A_long PF_OutFlags2;
 
@@ -1090,6 +1131,12 @@ enum {		/* The order of this enumeration must not be altered! */
 
 	PF_Cmd_GET_FLATTENED_SEQUENCE_DATA,
 	PF_Cmd_TRANSLATE_PARAMS_TO_PREFS, 
+
+	PF_Cmd_RESERVED4,			/* private command */
+	PF_Cmd_SMART_RENDER_GPU,	/* used when rendering on the GPU */
+	PF_Cmd_GPU_DEVICE_SETUP,
+	PF_Cmd_GPU_DEVICE_SETDOWN,
+
 	PF_Cmd_NUM_CMDS
 };
 typedef A_long PF_Cmd;
@@ -1119,7 +1166,7 @@ typedef A_u_long	PF_UFixed;
 
 #ifndef A_INTERNAL
 
-	#if defined(_WINDOWS) 
+	#if defined(_WINDOWS) || defined(__ANDROID__)
 
 		typedef A_long		PF_Fixed;
 		typedef A_char		PF_Boolean;
@@ -1266,6 +1313,7 @@ typedef PF_Fixed	PF_HLS_Pixel[3];
  ** the kinds of multichannels we understand
  **/
 #define PF_ChannelType_DEPTH		 'DPTH'
+#define PF_ChannelType_DEPTHAA		 'DPAA'	 // since 16.0 for 3D Precomp in some Artisans
 #define PF_ChannelType_NORMALS		 'NRML'
 #define PF_ChannelType_OBJECTID		 'OBID'
 #define PF_ChannelType_MOTIONVECTOR	 'MTVR'
@@ -1446,8 +1494,7 @@ typedef struct PF_LayerDef {
 	A_long				origin_x;		/* origin of buffer in layer coords; smart effect checkouts only */ 
 	A_long				origin_y;
 
-	A_short				reserved_short1;
-	A_short				reserved_short2;
+	A_long				reserved_long3;
 	
 	/* PARAMETER DESCRIPTION */
 	A_long				dephault;		/* use a PF_LayerDefault constant defined above */
@@ -1506,11 +1553,13 @@ enum {
 	PF_ValueDisplayFlag_NONE 		= 0,
 	PF_ValueDisplayFlag_PERCENT		= 1 << 0,		// append % to value display for A_FpShort sliders (for fixed-point sliders, also maps range into 0-100%)
 	PF_ValueDisplayFlag_PIXEL		= 1 << 1,		// assume 0..1 is a pixel value, either 0..255,  0..32768, or 0..1.0 in UI (value will always be 0..1),
-	PF_ValueDisplayFlag_RESERVED1	= 1 << 2		// reserved for After Effects
+	PF_ValueDisplayFlag_RESERVED1	= 1 << 2,		// reserved for After Effects
+	PF_ValueDisplayFlag_REVERSE		= 1 << 3		// presentation negates values. eg: a true -5 would be presented as "5", and typing in "22" would store in the model as -22
 };
 
 #define PF_VALUEFLAG_IS_PERCENT(A)			(((A) & PF_ValueDisplayFlag_PERCENT) != 0)
 #define PF_VALUEFLAG_IS_PIXEL(A)			(((A) & PF_ValueDisplayFlag_PIXEL) != 0)
+#define PF_VALUEFLAG_IS_REVERSED(A)			(((A) & PF_ValueDisplayFlag_REVERSE) != 0)
 
 typedef A_short PF_ValueDisplayFlags;
 
@@ -2229,6 +2278,14 @@ typedef PF_ParamDef** PF_ParamList;
  };
  typedef A_long PF_ChannelMask;
  
+ enum {
+	PF_GPU_Framework_NONE = 0,
+	PF_GPU_Framework_OPENCL,
+	PF_GPU_Framework_METAL,
+	PF_GPU_Framework_CUDA,
+ };
+ typedef A_long PF_GPU_Framework;
+		
  typedef struct {
  	PF_LRect		rect;
  	PF_Field		field;
@@ -2241,16 +2298,19 @@ typedef PF_ParamDef** PF_ParamList;
  typedef struct {
  	PF_RenderRequest	output_request;	// what the effect is being asked to render
  	short				bitdepth;		// bitdepth the effect is being driven in (in bpc)
+	const void			*gpu_data;
+	PF_GPU_Framework	what_gpu;
+	A_u_long			device_index;
  } PF_PreRenderInput;
- 
+
  typedef void (*PF_DeletePreRenderDataFunc)(void *pre_render_data);
 
  
  enum {
  	PF_RenderOutputFlag_RETURNS_EXTRA_PIXELS = 0x1, // if it's just as cheap to compute more pixels at once, set this to allow result > request rect
-	PF_RenderOutputFlag_RESERVED = 0x2
+	PF_RenderOutputFlag_GPU_RENDER_POSSIBLE = 0x2   // if the GPU render is possible given the params and frame render context
  };
-typedef short PF_RenderOutputFlags;
+ typedef short PF_RenderOutputFlags;
 
  typedef struct {
  	PF_LRect		result_rect;		// the rectangle actually available from this request (can be empty)
@@ -2306,10 +2366,13 @@ typedef struct {
  	PF_PreRenderCallbacks *cb;
  } PF_PreRenderExtra;
  
-typedef struct {
- 	PF_RenderRequest	output_request;	// what the effect is being asked to render
- 	short				bitdepth;		// bitdepth the effect is being driven in (in bpc)
-	void				*pre_render_data;// passed back from value placed in extra->output->pre_render_data during PF_Cmd_PRE_RENDER
+ typedef struct {
+ 	PF_RenderRequest    output_request;	// what the effect is being asked to render
+	short               bitdepth;		// bitdepth the effect is being driven in (in bpc)
+	void                *pre_render_data;// passed back from value placed in extra->output->pre_render_data during PF_Cmd_PRE_RENDER
+	const void			*gpu_data;
+	PF_GPU_Framework    what_gpu;
+	A_u_long            device_index; // For use in conjunction with PrSDKGPUDeviceSuite
  } PF_SmartRenderInput;
 
  typedef struct {
@@ -2326,16 +2389,51 @@ typedef struct {
  	PF_Err (*checkout_output)(
  		PF_ProgPtr		effect_ref,		// reference from in_data 
  		PF_EffectWorld	**output);		// out
- 
+
  } PF_SmartRenderCallbacks;
- 
+
  // Passed as extra param during PF_Cmd_SMART_RENDER
  typedef struct {
  	PF_SmartRenderInput		*input;
  	PF_SmartRenderCallbacks *cb;
  } PF_SmartRenderExtra;
+
+
+ /** -------------------- GPU Setup/Setdown Constants and Structures --------------------
  
+   PF_Cmd_GPU_DEVICE_SETUP gets a PF_GPUDeviceSetupExtra struct in the extra pointer.
  
+   PF_Cmd_GPU_DEVICE_SETDOWN gets a PF_GPUDeviceSetdownExtra struct in the extra pointer.
+
+ */
+
+
+ typedef struct {
+	PF_GPU_Framework what_gpu;
+	A_u_long         device_index; // For use in conjunction with PrSDKGPUDeviceSuite
+ } PF_GPUDeviceSetupInput;
+
+ typedef struct {
+	void *gpu_data; // effect owned pointer.
+ } PF_GPUDeviceSetupOutput;
+
+ typedef struct {
+	PF_GPUDeviceSetupInput *input;
+	PF_GPUDeviceSetupOutput *output;
+ } PF_GPUDeviceSetupExtra;
+ 
+
+ 
+ typedef struct {
+	void        		*gpu_data; // effect must dispose.
+	PF_GPU_Framework	what_gpu;
+	A_u_long			device_index; // For use in conjunction with PrSDKGPUDeviceSuite
+ } PF_GPUDeviceSetdownInput;
+
+ typedef struct {
+	PF_GPUDeviceSetdownInput *input;
+ } PF_GPUDeviceSetdownExtra;
+
 
 
 /** -------------------- Interaction Callbacks --------------------
@@ -2917,3 +3015,4 @@ typedef PF_Err (*PF_FilterProc)(
 
 
 #endif /* _H_AE_Effect */
+
