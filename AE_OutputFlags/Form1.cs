@@ -38,6 +38,18 @@ namespace AE_OutputFlags
             {
                 aE_Effect1.Import(filePath);
             }
+            else
+            {
+                string pp = Path.Combine( Path.GetDirectoryName(Application.ExecutablePath), "AE_Effect.json");
+                if (File.Exists(pp))
+                {
+                    aE_Effect1.Import(pp);
+                }
+                else
+                {
+                    MessageBox.Show("Please import AE_Effect.h");
+                }
+            }
 
             JsonPref pref = new JsonPref();
             if (pref.Load())
