@@ -169,7 +169,7 @@ namespace AE_OutputFlags
                 m_Num2 = value;
                 if (m_Num2 != null)
                 {
-                    m_Num2.Tag = 1;
+                    m_Num2.Tag = 2;
                     m_Num2.ValueChanged += M_Num_ValueChanged;
 
                 }
@@ -203,7 +203,7 @@ namespace AE_OutputFlags
                     for (int i = 0; i < m_ListBox2.Items.Count; i++)
                     {
                         bool b = ((v & m_out_flags2.Flags[i].Value) == m_out_flags2.Flags[i].Value);
-                        m_ListBox1.SetItemChecked(i, b);
+                        m_ListBox2.SetItemChecked(i, b);
                     }
                 }
 
