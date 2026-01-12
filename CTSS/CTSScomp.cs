@@ -32,6 +32,7 @@ namespace CTSS
 	public class CTSScomp :Component
 	{
 		private OPT m_Option = OPT.G;
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public OPT Option
 		{
 			get { return m_Option; }
@@ -45,6 +46,7 @@ namespace CTSS
 		}
 
 		private string m_CTSSPath = "";
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string CTSSPath
 		{
 			get { return m_CTSSPath; }
@@ -57,6 +59,7 @@ namespace CTSS
 			}
 		}
 		private string m_OptionFilePath = "";
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string OptionFilePath
 		{
 			get { return m_OptionFilePath; }
@@ -69,6 +72,7 @@ namespace CTSS
 			}
 		}
 		private string m_PdbPath = "";
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string PdbPath
 		{
 			get { return m_PdbPath; }

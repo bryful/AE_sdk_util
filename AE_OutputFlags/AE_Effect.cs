@@ -67,7 +67,8 @@ namespace AE_OutputFlags
 
         private CheckedListBox m_ListBox1 = null;
         private CheckedListBox m_ListBox2 = null;
-        public CheckedListBox ListBox1
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public CheckedListBox ListBox1
         {
             get { return m_ListBox1; }
             set
@@ -83,7 +84,8 @@ namespace AE_OutputFlags
         }
 
 
-        public CheckedListBox ListBox2
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public CheckedListBox ListBox2
         {
             get { return m_ListBox2; }
             set
@@ -148,7 +150,8 @@ namespace AE_OutputFlags
 
         private NumericUpDown m_Num1 = null;
         private NumericUpDown m_Num2 = null;
-        public NumericUpDown Num1
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public NumericUpDown Num1
         {
             get { return m_Num1; }
             set
@@ -161,7 +164,8 @@ namespace AE_OutputFlags
                 }
             }
         }
-        public NumericUpDown Num2
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public NumericUpDown Num2
         {
             get { return m_Num2; }
             set
@@ -211,7 +215,8 @@ namespace AE_OutputFlags
             refFlag = false;
         }
         private TextBox m_DescriptionBox = null;
-        public TextBox DescriptionBox
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public TextBox DescriptionBox
         {
             get { return m_DescriptionBox; }
             set
@@ -224,7 +229,8 @@ namespace AE_OutputFlags
             }
         }
         private TextBox m_DescriptionBoxJ = null;
-        public TextBox DescriptionBoxJ
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public TextBox DescriptionBoxJ
         {
             get { return m_DescriptionBoxJ; }
             set
@@ -238,6 +244,7 @@ namespace AE_OutputFlags
         }
         private TextBox m_ComBox1 = null;
         private TextBox m_ComBox2 = null;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TextBox ComBox1
         {
             get { return m_ComBox1; }
@@ -250,6 +257,8 @@ namespace AE_OutputFlags
                 }
             }
         }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TextBox ComBox2
         {
             get { return m_ComBox2; }

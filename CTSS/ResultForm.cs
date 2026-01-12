@@ -19,6 +19,7 @@ namespace CTSS
 		{
 			this.Hide();
 		}
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string Mes
 		{
 			get { return textBox1.Text; }
