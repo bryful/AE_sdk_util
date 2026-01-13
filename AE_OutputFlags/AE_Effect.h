@@ -78,7 +78,20 @@
 #if defined(__APPLE__)
 #include <CoreFoundation/CFBase.h>
 #endif
+
+#ifdef _WIN32
+    #pragma warning(push)
+    #pragma warning(disable : 4103)
+#elif defined(__clang__)
+	#pragma clang diagnostic push
+	#pragma clang diagnostic ignored "-Wpragma-pack"
+#endif
 #include <adobesdk/config/PreConfig.h>
+#ifdef _WIN32
+    #pragma warning(pop)
+#elif defined(__clang__)
+	#pragma clang diagnostic pop
+#endif
 
 
 #ifdef __cplusplus
@@ -124,8 +137,12 @@
 #define PF_Vers_VERS_LOW_SHIFT  3
 #define PF_Vers_VERS_HIGH(vers) ((vers)>>PF_Vers_VERS_LOW_SHIFT)
 
+// Alias for clarity
+typedef A_u_long PFVersionInfo;
+
+// clang-format off
 #define PF_VERSION(vers, subvers, bugvers, stage, build)	\
-	(A_u_long)(	\
+	(PFVersionInfo)(	\
  		((((A_u_long)PF_Vers_VERS_HIGH(vers)) & PF_Vers_VERS_HIGH_BITS) << PF_Vers_VERS_HIGH_SHIFT) |   \
 		((((A_u_long)(vers)) & PF_Vers_VERS_BITS) << PF_Vers_VERS_SHIFT) |	\
 		((((A_u_long)(subvers)) & PF_Vers_SUBVERS_BITS)<<PF_Vers_SUBVERS_SHIFT) |\
@@ -133,6 +150,7 @@
 		((((A_u_long)(stage)) & PF_Vers_STAGE_BITS) << PF_Vers_STAGE_SHIFT) |	\
 		((((A_u_long)(build)) & PF_Vers_BUILD_BITS) << PF_Vers_BUILD_SHIFT)	\
 	)
+// clang-format on
 
 #define PF_Version_VERS(vers)		\
  	(((((A_u_long) vers) >> PF_Vers_VERS_SHIFT) & PF_Vers_VERS_BITS) + (((vers >> PF_Vers_VERS_HIGH_SHIFT) & PF_Vers_VERS_HIGH_BITS) << PF_Vers_VERS_LOW_SHIFT))
@@ -173,6 +191,33 @@ typedef A_long PF_Stage;
 **/
 
 //CC
+#define PF_AE235_PLUG_IN_VERSION			13	// nothing major new
+#define PF_AE235_PLUG_IN_SUBVERS			29	// manually set due to new 'PF_ANSICallbacksSuite2', and SDK won't compile with old code
+
+#define PF_AE234_PLUG_IN_VERSION			13	// manually set for SDK changes to allow more than 32 max threads for PF_Iterate
+#define PF_AE234_PLUG_IN_SUBVERS			28	// manually set for new 'Support URL' field in PiPL and new entry point
+
+#define PF_AE220_PLUG_IN_VERSION			13	// manually set for SDK changes to allow more than 32 max threads for PF_Iterate
+#define PF_AE220_PLUG_IN_SUBVERS			27	// manually set for SDK changes to allow more than 32 max threads for PF_Iterate
+
+#define PF_AE184_PLUG_IN_VERSION			13	// manually set for mid-cycle SDK drop
+#define PF_AE184_PLUG_IN_SUBVERS			26	// manually set for mid-cycle SDK drop
+
+#define PF_AE182_PLUG_IN_VERSION			13	// manually set for mid-cycle SDK drop
+#define PF_AE182_PLUG_IN_SUBVERS			25	// manually set for mid-cycle SDK drop
+
+#define PF_AE180_PLUG_IN_VERSION			13	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+#define PF_AE180_PLUG_IN_SUBVERS			24	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+
+#define PF_AE177_PLUG_IN_VERSION			13	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+#define PF_AE177_PLUG_IN_SUBVERS			23	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+
+#define PF_AE176_PLUG_IN_VERSION			13	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+#define PF_AE176_PLUG_IN_SUBVERS			22	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+
+#define PF_AE175_PLUG_IN_VERSION			13	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+#define PF_AE175_PLUG_IN_SUBVERS			21	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+
 #define PF_AE171_PLUG_IN_VERSION			13	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
 #define PF_AE171_PLUG_IN_SUBVERS			20	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
 
@@ -259,8 +304,12 @@ typedef A_long PF_Stage;
 #define PF_AE31_PLUG_IN_SUBVERS				6
 #define PF_AE31_PLUG_IN_SUBVERS_STRICTIFY	8
 
-#define PF_AE_PLUG_IN_VERSION				PF_AE171_PLUG_IN_VERSION	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
-#define PF_AE_PLUG_IN_SUBVERS				PF_AE171_PLUG_IN_SUBVERS	// auto-set by prep_codeline_for_release.py, adjust comment if manually edit is okay
+#define PF_AE_PLUG_IN_VERSION				PF_AE235_PLUG_IN_VERSION	// manually set for SDK changes to allow more than 32 max threads for PF_Iterate
+#define PF_AE_PLUG_IN_SUBVERS				PF_AE235_PLUG_IN_SUBVERS	// manually set for SDK changes to allow more than 32 max threads for PF_Iterate
+
+#define PF_AE_MAJOR_MINOR(_maj, _min)       (size_t)(((_maj) << 16) + (_min))
+#define PF_AE_PLUG_IN_API_VERS              PF_AE_MAJOR_MINOR(PF_AE_PLUG_IN_VERSION, PF_AE_PLUG_IN_SUBVERS)
+
 
 /* Note:	AE3.1 will drive any v11.x plugin
 			AE4.0 will drive any v11.x or v12.x plugin
@@ -362,6 +411,14 @@ enum {
 };
 typedef A_long PF_ParamType;
 
+enum {
+    PF_Precision_INTEGER,
+    PF_Precision_TENTHS,
+    PF_Precision_HUNDREDTHS,
+    PF_Precision_THOUSANDTHS,
+    PF_Precision_TEN_THOUSANDTHS
+};
+typedef A_short PF_Precision;
 
 /* PF_ParamFlags
 
@@ -413,18 +470,27 @@ typedef A_long PF_ParamType;
 
 **/
 enum {
-	PF_ParamFlag_RESERVED1			= 1 << 0,
-	PF_ParamFlag_CANNOT_TIME_VARY	= 1 << 1,		/* can't vary over time */
-	PF_ParamFlag_CANNOT_INTERP		= 1 << 2,		/* can only vary discontinuously */
-	PF_ParamFlag_RESERVED2			= 1 << 3,		/* was _old_ PF_ParamFlag_WANTS_UPDATE value, never used */
-	PF_ParamFlag_RESERVED3			= 1 << 4,		/* was _old_ PF_ParamFlag_SEPARATE, now use PF_PUI_ECW_SEPARATOR */
-	PF_ParamFlag_COLLAPSE_TWIRLY	= 1 << 5,		/* controls the twirl-state of the twirly-arrow in the ECW (dynamic) */
-	PF_ParamFlag_SUPERVISE			= 1 << 6,		/* call me with PF_Cmd_USER_CHANGED_PARAM (new in AE 4.0) */
-	PF_ParamFlag_START_COLLAPSED = PF_ParamFlag_COLLAPSE_TWIRLY,	/* when first applied, param comes up collapsed */
+	PF_ParamFlag_NONE   							= 0,
+	PF_ParamFlag_RESERVED1							= 1 << 0,
+	PF_ParamFlag_CANNOT_TIME_VARY					= 1 << 1,		/* can't vary over time */
+	PF_ParamFlag_CANNOT_INTERP						= 1 << 2,		/* can only vary discontinuously */
+	PF_ParamFlag_RESERVED2							= 1 << 3,		/* was _old_ PF_ParamFlag_WANTS_UPDATE value, never used */
+	PF_ParamFlag_RESERVED3							= 1 << 4,		/* was _old_ PF_ParamFlag_SEPARATE, now use PF_PUI_ECW_SEPARATOR */
+	PF_ParamFlag_COLLAPSE_TWIRLY					= 1 << 5,		/* controls the twirl-state of the twirly-arrow in the ECW (dynamic) */
+	PF_ParamFlag_SUPERVISE							= 1 << 6,		/* call me with PF_Cmd_USER_CHANGED_PARAM (new in AE 4.0) */
+
+	/* when first applied, param comes up collapsed */
+	PF_ParamFlag_START_COLLAPSED					= PF_ParamFlag_COLLAPSE_TWIRLY, 
 	PF_ParamFlag_USE_VALUE_FOR_OLD_PROJECTS			= 1 << 7,		/* see extensive comment above */
-	PF_ParamFlag_LAYER_PARAM_IS_TRACKMATTE			= 1 << 7,		/* only valid for layer parameters. indicates that a layer param is used as a track-matte with applied filters (used in Premiere, ignored in AE) */
+ 	
+ 	/* only valid for layer parameters. indicates that a layer param is used as a track-matte with applied filters (used in Premiere, ignored in AE) */
+ 	PF_ParamFlag_LAYER_PARAM_IS_TRACKMATTE			= PF_ParamFlag_USE_VALUE_FOR_OLD_PROJECTS,
 	PF_ParamFlag_EXCLUDE_FROM_HAVE_INPUTS_CHANGED	= 1 << 8,		/* only relevant if you call PF_HaveInputsChangedOverTimeSpan() */
-	PF_ParamFlag_SKIP_REVEAL_WHEN_UNHIDDEN			= 1 << 9		/* dont reveal this stream when un-hidden (use only during param setup) */
+	PF_ParamFlag_SKIP_REVEAL_WHEN_UNHIDDEN			= 1 << 9,		/* dont reveal this stream when un-hidden (use only during param setup) */
+	PF_ParamFlag_unused1        					= 1 << 10,		/* unused, feel free to use this */
+	PF_ParamFlag_RESERVED4							= 1 << 11,		/* reserved for internal use: it IS in use, don't use it! */
+	
+	PF_ParamFlags_ALL								= 0xFFFFFFFF	/* not used */
 };
 typedef A_long PF_ParamFlags;
 
@@ -461,7 +527,44 @@ enum {
 typedef A_long PF_WorldFlags;
 
 #define PF_WORLD_IS_DEEP(W)		( ((W)->world_flags & PF_WorldFlag_DEEP) != 0 )
+    
+/**
+    Maximum codepoint values for each of the fixed-point channel types in After Effects
 
+    Note carefully that the maximum value for the 16-bit type does not use the full
+    range of a 16-bit integer, but rather uses the range [0..2^15] and thus there is
+    only one legal codepoint with 1 in the 16th bit. Values beyond this will exhibit
+    undefined behavior and must not escape your plug-in.
+
+    Why?
+
+    This value was ultimately chosen because it is the internal representation for
+    fixed 16-bit channels in core Adobe imaging libraries, including those in Photoshop.
+    This representation minimizes lossy conversion during processing, and simpler data
+    interchange with other Adobe technology.
+
+    Additionally, [0..32768] has a few nice properties which are especially helpful in
+    compositing operations while remaining entirely in the integer domain.
+    
+    * Many blending and compositing operations are simpler when there is a codepoint for
+    the exact middle of the range, which this representation provides (16834).
+
+    * An exact power of 2 simplifies operations which use LUTs; full range 16-bit LUTs
+    can be impractical, but they can be efficiently approximated with linear interpolation
+    from smaller LUTs using only shifting operations.
+
+    * divide by MAX is a common math operation in compositing and blending. Using 32878,
+    this can also be done exactly with a shift operation, versus the multiple shifts and
+    adds needed to a correct integer divide (or div instruction if your compiler isn't
+    smart enough)
+
+    * 32-bit float is available for user workflows where additional precision, and the
+    support for over and underrange values, is desired
+
+    The performance justifications are of course much less relevant in modern machines
+    & especially with SIMD and GPU processing, but there are still workflows where the
+    predictability of integer/fixed point is useful.
+ */
 #define PF_MAX_CHAN8			255
 #define PF_HALF_CHAN8			128
 #define PF_MAX_CHAN16			32768
@@ -820,7 +923,16 @@ typedef A_long PF_WorldFlags;
 		If the effect sets PF_OutFlag_SEQUENCE_DATA_NEEDS_FLATTENING indicating the sequence data needs flattening
 		then it must also set PF_OutFlag2_SUPPORTS_GET_FLATTENED_SEQUENCE_DATA.
 		
-		Writing to sequence_data during rendering is not supported with threaded rendering. Results are undefined.
+		sequence_data is read-only at render time and must be accessed with PF_EffectSequenceDataSuite.
+		in_data->sequence_data will be NULL during render. AEGP_ComputeCacheSuite is suggested if writing to
+		sequence_data at render time is needed for caching. This suite unifies cache entries so multiple threads do
+		not recompute the same cache value. If neither of these solutions work, see the next flag,
+		PF_OutFlag2_MUTABLE_RENDER_SEQUENCE_DATA_SLOWER.
+
+	PF_OutFlag2_MUTABLE_RENDER_SEQUENCE_DATA_SLOWER
+		Indicates the effect needs sequence_data replicated for each render thread, thus allowing each render to have
+		sequence_data which can be written to. Note that changes to sequence_data will be discarded regularly, currently
+		after each span of frames is rendered such as single RAM Preview or Render Queue export.
 
 **/
 
@@ -883,7 +995,7 @@ enum {
 	PF_OutFlag2_I_USE_COLORSPACE_ENUMERATION	= 1L << 13,		// PF_Cmd_GLOBAL_SETUP, not implemented in AE7 (may be impl in Premiere Pro)
 	PF_OutFlag2_I_AM_DEPRECATED					= 1L << 14,		// PF_Cmd_GLOBAL_SETUP
 	PF_OutFlag2_PPRO_DO_NOT_CLONE_SEQUENCE_DATA_FOR_RENDER	= 1L << 15,		// PF_Cmd_GLOBAL_SETUP, Premiere only, CS4.1 and later
-	PF_OutFjlag2_RESERVED10						= 1L << 16,		// PF_Cmd_GLOBAL_SETUP
+	PF_OutFlag2_RESERVED10						= 1L << 16,		// PF_Cmd_GLOBAL_SETUP
 	PF_OutFlag2_AUTOMATIC_WIDE_TIME_INPUT		= 1L << 17,		// PF_Cmd_GLOBAL_SETUP, falls back to PF_OutFlag_WIDE_TIME_INPUT if not PF_OutFlag2_SUPPORTS_SMART_RENDER
 	PF_OutFlag2_I_USE_TIMECODE					= 1L << 18,		// PF_Cmd_GLOBAL_SETUP
 	PF_OutFlag2_DEPENDS_ON_UNREFERENCED_MASKS	= 1L << 19,		// PF_Cmd_GLOBAL_SETUP, PF_Cmd_QUERY_DYNAMIC_FLAGS
@@ -892,9 +1004,11 @@ enum {
 	PF_OutFlag2_AE13_5_THREADSAFE				= 1L << 22,		// PF_Cmd_GLOBAL_SETUP (unused)
 	PF_OutFlag2_SUPPORTS_GET_FLATTENED_SEQUENCE_DATA	= 1L << 23,		// PF_Cmd_GLOBAL_SETUP, support required if both PF_OutFlag_SEQUENCE_DATA_NEEDS_FLATTENING and PF_OutFlag2_SUPPORTS_THREADED_RENDERING is set
 	PF_OutFlag2_CUSTOM_UI_ASYNC_MANAGER			= 1L << 24,		// PF_Cmd_GLOBAL_SETUP
-	PF_OutFlag2_SUPPORTS_GPU_RENDER_F32			= 1L << 25,		// PF_Cmd_GLOBAL_SETUP,
+	PF_OutFlag2_SUPPORTS_GPU_RENDER_F32			= 1L << 25,		// PF_Cmd_GLOBAL_SETUP, PF_Cmd_GPU_DEVICE_SETUP. Must also set PF_RenderOutputFlag_GPU_RENDER_POSSIBLE at pre-render to enable GPU rendering.
 	PF_OutFlag2_RESERVED12						= 1L << 26,		// PF_Cmd_GLOBAL_SETUP
-	PF_OutFlag2_SUPPORTS_THREADED_RENDERING		= 1L << 27		// PF_Cmd_GLOBAL_SETUP
+	PF_OutFlag2_SUPPORTS_THREADED_RENDERING		= 1L << 27,		// PF_Cmd_GLOBAL_SETUP
+	PF_OutFlag2_MUTABLE_RENDER_SEQUENCE_DATA_SLOWER = 1L << 28,	// PF_Cmd_GLOBAL_SETUP
+    PF_OutFlag2_SUPPORTS_DIRECTX_RENDERING      = 1L << 29      // PF_Cmd_GLOBAL_SETUP. Filter must also set PF_OutFlag2_SUPPORTS_GPU_RENDER_F32
 };
 typedef A_long PF_OutFlags2;
 
@@ -1090,6 +1204,11 @@ typedef A_long PF_InFlags;
 		appropriate bits when possible can result in great performance improvements, but 
 		incorrectly clearing bits will result in caching bugs, and you won't like that. Nope.
 
+	*** Important Reminder***
+		Before you add a new PF_Cmd, evaluate whether it should allow
+		new Sequence Data allocations! If so, remember to add it to
+		CmdCanChangeSequenceData() in FLT_Host.cpp!
+
 **/
 enum {		/* The order of this enumeration must not be altered! */
 	PF_Cmd_ABOUT = 0,			/* about can be called at any time */
@@ -1190,13 +1309,14 @@ typedef A_u_long	PF_UFixed;
 	#endif
 
 	typedef struct {
-		#ifdef	LPOINT_RENAME_COMPONENTS
-			A_long	x;
-			A_long	y;
-		#else
-			A_long	h;
-			A_long	v;
-		#endif
+		union {
+			A_long x;
+			A_long h;
+		};
+		union {
+			A_long y;
+			A_long v;
+		};
 	} PF_Point;
 
 	typedef struct {
@@ -1232,6 +1352,9 @@ typedef struct {
 
 
 #ifndef A_INTERNAL
+	// typedefs from AE_EffectCB.h
+	typedef A_long    PF_TransferMode;
+	typedef PF_TransferMode PF_XferMode;
 
 	// Basic pixel defn's
 	typedef struct {
@@ -1260,6 +1383,14 @@ typedef struct {
 	typedef struct {
 		PF_FpLong				mat[3][3];
 	} PF_FloatMatrix;
+
+	typedef struct {
+		PF_TransferMode     xfer;
+		A_long				rand_seed;  // for PF_Xfer_DISSOLVE_RANDOMIZED
+		A_u_char			opacity;	// 0 - 255	
+		PF_Boolean          rgb_only;   // ignored for PF_Xfer_MULTIPLY_ALPHA modes
+		A_u_short			opacitySu;	// for deep color only
+	} PF_CompositeMode;
 
 #endif
 
@@ -1564,6 +1695,21 @@ enum {
 typedef A_short PF_ValueDisplayFlags;
 
 
+/*
+    These macros alias the PF_ParamDef UI string fields to abstract the struct layout:
+      - PF_DEF_NAME:      fixed-size parameter display-name buffer (char[32])
+      - PF_DEF_NAMEPTR:   checkbox value-label pointer (assign a stable C string that you provide, host manages the pointer storage)
+      - PF_DEF_NAMESPTR:  popup/button choice string pointer(s) (assign a stable C string array that you provide, host manages the pointer storage)
+        Do not access the underlying struct members directly.
+
+	That way, an engineer can easily change the name here, then recompile,
+    to see if anyone is illegally accessing the string pointers,
+    instead of going through the proper calls
+*/
+#define	PF_DEF_NAME				name_do_not_use_directly
+#define	PF_DEF_NAMEPTR			nameptr
+#define	PF_DEF_NAMESPTR			namesptr
+
 /** Slider -- PF_Param_SLIDER
 **/
 typedef struct {
@@ -1591,13 +1737,14 @@ typedef struct {
 	PF_Fixed					valid_min, valid_max;		/* acceptable input range */
 	PF_Fixed					slider_min, slider_max;		/* range represented by width of slider */
 	PF_Fixed					dephault;
-	A_short						precision;					/* decimal places to display */
+	PF_Precision				precision;					/* decimal places to display */
 	PF_ValueDisplayFlags		display_flags;				/* set bit to 1 to enable special display:
 												 *	--> bit 0 == append percent sign
 												 */
 } PF_FixedSliderDef;
 
 
+#define		AEFX_DEFAULT_CURVE_TOLERANCE			    0.0f    //  audio only
 #define		AEFX_AUDIO_DEFAULT_CURVE_TOLERANCE			0.05f
 
 
@@ -1619,7 +1766,7 @@ typedef struct {
 	PF_FpShort				valid_min, valid_max;		/* acceptable input range */
 	PF_FpShort				slider_min, slider_max;		/* range represented by width of slider */
 	PF_FpShort				dephault;
-	A_short					precision;					/* decimal places to display */
+	PF_Precision			precision;					/* decimal places to display */
 	PF_ValueDisplayFlags	display_flags;				/* set bit to 1 to enable special display:
 														 *	--> bit 0 == append percent sign
 														 */
@@ -1662,7 +1809,7 @@ typedef struct {
 	A_char		reserved;	/* padding	*/
 	A_short		reserved1;
 	union {
-		const A_char	*nameptr;
+		const A_char	*PF_DEF_NAMEPTR;
 	} u;
 } PF_CheckBoxDef;
 
@@ -1739,7 +1886,7 @@ typedef struct {
 	A_short		num_choices;
 	A_short		dephault;
 	union {
-		const A_char	*namesptr; /*  menu manager standard, '|' separator */
+		const A_char	*PF_DEF_NAMESPTR; /*  menu manager standard, '|' separator */
 	} u;
 } PF_PopupDef;
 
@@ -1754,7 +1901,7 @@ typedef struct {
 	PF_ParamValue	value;		// not used at this time
 
 	union {
-		const A_char	*namesptr; /* button name */
+		const A_char	*PF_DEF_NAMESPTR; /* button name */
 	} u;
 } PF_ButtonDef;
 
@@ -2055,11 +2202,39 @@ typedef struct {
 	PF_Handle					dependencies_strH;			/* << */ // NULL terminated string.  Flat and disposed of by the host
 } PF_ExtDependenciesExtra;
 
+#ifdef _WIN32
+    #pragma warning(push)
+    #pragma warning(disable : 4103)
+#elif defined(__clang__)
+	#pragma clang diagnostic push
+	#pragma clang diagnostic ignored "-Wpragma-pack"
+#endif
+#include <adobesdk/config/PostConfig.h>
+#ifdef _WIN32
+    #pragma warning(pop)
+#elif defined(__clang__)
+	#pragma clang diagnostic pop
+#endif
 
 #ifdef PREMIERE_INTERNAL
 	#include "PF_Private_Premiere.h"
-#else
+#endif
 
+#ifdef _WIN32
+    #pragma warning(push)
+    #pragma warning(disable : 4103)
+#elif defined(__clang__)
+	#pragma clang diagnostic push
+	#pragma clang diagnostic ignored "-Wpragma-pack"
+#endif
+#include <adobesdk/config/PreConfig.h>
+#ifdef _WIN32
+    #pragma warning(pop)
+#elif defined(__clang__)
+	#pragma clang diagnostic pop
+#endif
+
+#ifndef PREMIERE_INTERNAL
 
 typedef union {
 	PF_LayerDef					ld;
@@ -2185,10 +2360,11 @@ enum {
 	
 	PF_PUI_RADIO_BUTTON			= 1L << 8,	// display as a radio-button group; only valid for PF_Param_POPUP; ignored by AE
 
-	PF_PUI_INVISIBLE			= 1L << 9	// in AE as of CS6, this hides the parameter UI in both the Effect Controls and Timeline.
+	PF_PUI_INVISIBLE			= 1L << 9,	// in AE as of CS6, this hides the parameter UI in both the Effect Controls and Timeline.
 											// in Premiere since earlier than that, this hides the parameter UI in the Effect Controls,
 											//	which includes the keyframe track; for PPro only, the flag is dynamic and can be cleared
 											//	to make the parameter visible again.
+	PF_PUI_RESERVED			= 1L << 10
 };
 typedef A_long PF_ParamUIFlags;
 
@@ -2242,7 +2418,7 @@ typedef struct {
 	
 	/* PARAMETER DESCRIPTION */
 	PF_ParamType	param_type;
-	A_char			name[PF_MAX_EFFECT_PARAM_NAME_LEN + 1];
+	A_char			PF_DEF_NAME[PF_MAX_EFFECT_PARAM_NAME_LEN + 1];
 	PF_ParamFlags	flags;
 	
 	A_long			unused;		// Once upon a time was reserved_tdb
@@ -2252,15 +2428,33 @@ typedef struct {
 
 typedef PF_ParamDef** PF_ParamList;
 
+//--------------------------------------------------------------------
 #define        PF_ParamDef_IS_PUI_FLAG_SET(_defP, _puiFlag)        \
   (((_defP)->ui_flags & _puiFlag) != 0)
    
+#define        PF_ParamDef_SET_PUI_FLAG(_defP, _puiFlag, _valB)		\
+do {																\
+	if (_valB) {													\
+   		(_defP)->ui_flags |= _puiFlag;								\
+	} else {														\
+   		(_defP)->ui_flags &= ~((A_long)_puiFlag);					\
+	}																\
+} while (0)
+   
+//--------------------------------------------------------------------
 #define        PF_ParamDef_IS_PARAM_FLAG_SET(_defP, _paramFlag)    \
    (((_defP)->flags & _paramFlag) != 0)
 
+#define        PF_ParamDef_SET_PARAM_FLAG(_defP, _paramFlag, _valB)	\
+do {																\
+	if (_valB) {													\
+   		(_defP)->flags |= _paramFlag;								\
+	} else {														\
+   		(_defP)->flags &= ~((A_long)_paramFlag);					\
+	}																\
+} while (0)
 
-
- /** -------------------- Smart Render Interface Constants and Structures -------------------- 
+/** -------------------- Smart Render Interface Constants and Structures -------------------- 
  
    PF_Cmd_SMART_PRE_RENDER gets a PF_PreRenderExtra struct in the extra pointer, and must
    fill out the "output" field before returning.
@@ -2283,6 +2477,7 @@ typedef PF_ParamDef** PF_ParamList;
 	PF_GPU_Framework_OPENCL,
 	PF_GPU_Framework_METAL,
 	PF_GPU_Framework_CUDA,
+	PF_GPU_Framework_DIRECTX
  };
  typedef A_long PF_GPU_Framework;
 		
@@ -2308,7 +2503,8 @@ typedef PF_ParamDef** PF_ParamList;
  
  enum {
  	PF_RenderOutputFlag_RETURNS_EXTRA_PIXELS = 0x1, // if it's just as cheap to compute more pixels at once, set this to allow result > request rect
-	PF_RenderOutputFlag_GPU_RENDER_POSSIBLE = 0x2   // if the GPU render is possible given the params and frame render context
+	PF_RenderOutputFlag_GPU_RENDER_POSSIBLE = 0x2,   // if the GPU render is possible given the params and frame render context
+	PF_RenderOutputFlag_RESERVED1 = 0x4,
  };
  typedef short PF_RenderOutputFlags;
 
@@ -2573,9 +2769,11 @@ typedef struct {
 } PF_InteractCallbacks;
 
 
+// clang-format off
 #define PF_CHECKOUT_PARAM(IN_DATA, INDEX, TIME, STEP, SCALE, PARAM)	\
 		(*(IN_DATA)->inter.checkout_param)((IN_DATA)->effect_ref,	\
 			(INDEX), (TIME), (STEP), (SCALE), (PARAM))
+// clang-format on
 
 #define PF_CHECKIN_PARAM(IN_DATA, PARAM)	\
 		(*(IN_DATA)->inter.checkin_param)((IN_DATA)->effect_ref, (PARAM))
@@ -2592,20 +2790,24 @@ typedef struct {
 #define PF_REGISTER_UI(IN_DATA, CUST_INFO)	\
 		(*(IN_DATA)->inter.register_ui)((IN_DATA)->effect_ref, (CUST_INFO))
 
+// clang-format off
 #define PF_CHECKOUT_LAYER_AUDIO(IN_DATA, INDEX, START_TIME, DURATION, SCALE, RATE,	\
 								BYTES_PER_SAMPLE, NUM_CHANNELS, FMT_SIGNED, AUDIO)	\
 		(*(IN_DATA)->inter.checkout_layer_audio)((IN_DATA)->effect_ref,	\
 			(INDEX), (START_TIME), (DURATION), (SCALE), (RATE), (BYTES_PER_SAMPLE),	\
 			(NUM_CHANNELS), (FMT_SIGNED), (AUDIO))
+// clang-format on
 
 #define PF_CHECKIN_LAYER_AUDIO(IN_DATA, AUDIO)	\
 		(*(IN_DATA)->inter.checkin_layer_audio)((IN_DATA)->effect_ref, (AUDIO))
 
+// clang-format off
 #define PF_GET_AUDIO_DATA(IN_DATA, AUDIO, DATA_0, NUM_SAMPLES_0, RATE_0,			\
 								BYTES_PER_SAMPLE_0, NUM_CHANNELS_0, FMT_SIGNED_0)	\
 		(*(IN_DATA)->inter.get_audio_data)((IN_DATA)->effect_ref,	\
 			(AUDIO), (DATA_0), (NUM_SAMPLES_0), (RATE_0), (BYTES_PER_SAMPLE_0),		\
 			(NUM_CHANNELS_0), (FMT_SIGNED_0))
+// clang-format on
 
 
 /** -------------------- Effect Parameter Blocks --------------------
@@ -2905,6 +3107,11 @@ typedef struct {
 	PF_OutFlags2		out_flags2;		/* ORed combo of PF_OutFlag2 values */
 } PF_OutData;
 
+enum {
+    kAppID_Premiere         = 'PrMr',
+    kAppID_AfterEffects     = 'FXTC'
+};
+typedef A_long              A_AppID;
 
 typedef struct {
 	PF_InteractCallbacks		inter;	/* effect interaction related callbacks */
@@ -2913,7 +3120,7 @@ typedef struct {
 	PF_Quality			quality;		/* quality user has selected */
 	PF_SpecVersion		version;
 	A_long				serial_num;
-	A_long				appl_id;
+	A_AppID				appl_id;
 	A_long				num_params;
 	A_long				reserved;
 	A_long				what_cpu;		/* return value from Gestalt asking CPU */
@@ -3011,8 +3218,19 @@ typedef PF_Err (*PF_FilterProc)(
 
 
 
+#ifdef _WIN32
+    #pragma warning(push)
+    #pragma warning(disable : 4103)
+#elif defined(__clang__)
+	#pragma clang diagnostic push
+	#pragma clang diagnostic ignored "-Wpragma-pack"
+#endif
 #include <adobesdk/config/PostConfig.h>
+#ifdef _WIN32
+    #pragma warning(pop)
+#elif defined(__clang__)
+	#pragma clang diagnostic pop
+#endif
 
 
 #endif /* _H_AE_Effect */
-
